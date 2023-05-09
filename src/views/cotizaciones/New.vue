@@ -579,8 +579,6 @@ export default {
 
       payload.loading = this.$loading
       payload.toast = this.$toast
-      payload.accion = 'nueva_cotizacion'
-      payload.active = "0"
       payload.expiration_date = this.form.hasta.value
       payload.company_id = this.form.cliente.value 
       payload.estimated_days = this.form.tiempo.value
@@ -596,7 +594,7 @@ export default {
       payload.specific_condition = this.form.especificaciones.value
       payload.quotation_number = this.form.cotizacion.value
       payload.pago_previo = this.form.pago_previo.value
-
+      payload.destinatario_id = this.form.destinatario.value
       await this.crearCotizacion(payload) 
 
       
