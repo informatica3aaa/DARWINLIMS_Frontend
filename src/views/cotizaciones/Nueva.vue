@@ -18,7 +18,9 @@
             <table class="table striped  table-bordered ">
               <tbody>
                 <tr>
-                  <td class="text-right">Rut</td> <td class="text-left">{{ cliente.rut }}-{{ cliente.dv }}</td> 
+                  <td class="text-right">Rut</td> <td class="text-left"> 
+                    <b>{{ cliente.rut }}-{{ cliente.dv }}</b>
+                  </td> 
                 </tr>
                 <tr v-if="cotiza">
                      <td class="text-right">Cotización</td> <td class="text-left">{{ cotiza.quotation_number}}</td>
@@ -36,10 +38,10 @@
                   
                 </tr>
                 <tr>
-                  <td class="text-right">Inicio</td> <td class="text-left">{{ new Date(cotiza.created) |   dateFormat('YYYY-MM-DD') }}</td> 
+                  <td class="text-right">Inicio</td> <td class="text-left">{{ cotiza.created }}</td> 
                 </tr>
                 <tr>
-                  <td class="text-right">Expiración</td> <td class="text-left">{{ new Date(cotiza.expiration_date) |   dateFormat('YYYY-MM-DD') }}</td>
+                  <td class="text-right">Expiración</td>  <td class="text-left">{{  cotiza.expiration_date  }}</td>
                 </tr>
                 <!-- <tr>
                   <td class="text-right">Pago previo</td> <td >
@@ -371,7 +373,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { BasicSelect } from 'vue-search-select'
 import Swal from "sweetalert2"
-import route from './../../router'
+import route from './../../router' 
 
 export default {
   name: 'CotizacionesNewDosView',
@@ -384,7 +386,7 @@ export default {
     BasicSelect
   },
   async mounted()
-  {
+  { 
        this.getTipoEnsayo(
        {
           loading: this.$loading,

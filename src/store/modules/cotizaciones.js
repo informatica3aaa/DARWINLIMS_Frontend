@@ -170,7 +170,15 @@ const actions = {
 
         try {
 
-            const { data } = await axios.post('/api/quotations/services', payload)
+            const { data } = await  axios({
+                method: 'post',
+                url: '/api/quotations/services',
+                data: payload,
+                timeout: 10000 
+              })
+              
+            //axios.post('/api/quotations/services', payload, {timeout: 10000})
+            
 
             if(!data.ok) throw { message: 'No se logro consultar por los servicios'}
             
@@ -551,7 +559,11 @@ const actions = {
             await commit('SET_SERVICIOS_AGREGADOS', [])
             //await commit('CLEAR_SERVICIOS_ELEGIDOS')
 
-            for(let servicio of data.data[0].analisis_asociado)
+            const asociados = data.data[0]?.analisis_asociado || [] 
+
+            console.log('asociados:: ', asociados)
+
+            for(let servicio of asociados)
             {
                 
                 await commit('ADD_SERVICIOS_ELEGIDOS', servicio)
