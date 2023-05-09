@@ -1,4 +1,4 @@
-# minerals-front-end
+# DARWINLIMS_Frontend
 # node version 18.8.0
 ### Node version 12.16.1
 ## Project setup

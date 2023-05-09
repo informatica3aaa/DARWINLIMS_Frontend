@@ -546,7 +546,7 @@ const actions = {
         let loading = payload.loading.show()
 
         try {
-            const { data } =  await axios.post('/api/quotations/accion', payload)
+            const { data } =  await axios.post('/api/quotations/new', payload)
 
             console.log(data)
 
