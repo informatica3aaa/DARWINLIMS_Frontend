@@ -38,10 +38,10 @@
                   
                 </tr>
                 <tr>
-                  <td class="text-right">Inicio</td> <td class="text-left">{{ cotiza.created }}</td> 
+                  <td class="text-right">Inicio</td> <td class="text-left">{{ new Date(cotiza.created) |   dateFormat('YYYY-MM-DD') }}</td> 
                 </tr>
                 <tr>
-                  <td class="text-right">Expiración</td>  <td class="text-left">{{  cotiza.expiration_date  }}</td>
+                  <td class="text-right">Expiración</td>  <td class="text-left">{{  new Date(cotiza.expiration_date) |   dateFormat('YYYY-MM-DD') }}</td>
                 </tr>
                 <!-- <tr>
                   <td class="text-right">Pago previo</td> <td >
@@ -551,7 +551,8 @@ export default {
     async changeEnsayo(item)
     {
       this.form.tipo_ensayo.value = item.value 
-      this.form.tipo_ensayo.text = item.text
+      this.form.tipo_ensayo.text = item.text 
+
       await this.changeServicios()
 
     },
@@ -579,8 +580,8 @@ export default {
     async changeServicio(item)
     {
       this.form.servicio.value = item.value 
-      this.form.servicio.text = item.text 
-      await this.changeServicios()
+      this.form.servicio.text = item.text  
+      console.log('this.form.servicio.value:: ', this.form.servicio.value, item)
     },
     async changeUnidad(item)
     {
@@ -603,13 +604,13 @@ export default {
           loading: this.$loading,
           toast : this.$toast,
           tipo :"servicios",
-          active :1,
+          active :1, 
           assay_type_id : this.form.tipo_ensayo.value || null,
           sample_type_id : this.form.tipo_muestra.value || null,
           digestion_id : this.form.tipo_digestion.value || null,
           technique_id : this.form.tipo_tecnica.value || null ,
-          unit_id : this.form.tipo_unidad.value || null,
-          chemical_element_id : this.form.tipo_elemento.value || null
+          unit_id : this.form.tipo_unidad.value || null, 
+          element_id : this.form.tipo_elemento.value || null
         }) 
 
     },
@@ -667,12 +668,12 @@ export default {
             {  is_select: 'description', active: false, fil: true, key: 'fases', label: 'Detalle' , class: 'text-left'}
           ],
           fields_elegidos: [
-            {  is_select: 'name', active: false, fil: true, key: 'name', label: 'Nombre', class: 'text-center' },
-            {  is_select: 'Tipo', active: false, fil: true, key: 'assay_name', label: 'Tipo', class: 'text-center'},
-            {  is_select: 'Método', active: false, fil: true, key: 'method_name', label: 'Método', class: 'text-center'},
-            {  is_select: 'Técnica', active: false, fil: true, key: 'technique_name', label: 'Técnica', class: 'text-center'},
-            {  is_select: 'Muestra', active: false, fil: true, key: 'sample_type_name', label: 'Muestra', class: 'text-center'},
-            {  is_select: 'Digestión', active: false, fil: true, key: 'digestion_name', label: 'Digestión', class: 'text-center'},
+            {  is_select: 'name', active: false, fil: true, key: 'assay_name', label: 'Nombre', class: 'text-center' },
+            {  is_select: 'Tipo', active: false, fil: true, key: 'tipo', label: 'Tipo', class: 'text-center'},
+            {  is_select: 'Método', active: false, fil: true, key: 'metodo', label: 'Método', class: 'text-center'},
+            {  is_select: 'Técnica', active: false, fil: true, key: 'tecnica', label: 'Técnica', class: 'text-center'},
+            {  is_select: 'Muestra', active: false, fil: true, key: 'tipo_muestra', label: 'Muestra', class: 'text-center'},
+            {  is_select: 'Digestión', active: false, fil: true, key: 'digestion', label: 'Digestión', class: 'text-center'},
             // {  is_select: 'Unidad', active: false, fil: true, key: 'digestion_name', label: 'Digestión', class: 'text-center'},
             // {  is_select: 'Elemento', active: false, fil: true, key: 'digestion_name', label: 'Digestión', class: 'text-center'},
             {  is_select: 'cost', active: false, fil: true, key: 'cost', label: 'Valor', class: 'text-center'},

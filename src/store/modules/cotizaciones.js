@@ -405,7 +405,8 @@ const actions = {
 
             if(!data.ok) throw { message: 'No se logro cargar los servicios'}
 
-            console.log('data:: ', data.data)
+            console.log('Paso::')
+            console.log('data[0]:: ', data.data)
 
             await commit('SET_SERVICIOS_AGREGADOS', data.data)
 
@@ -426,9 +427,9 @@ const actions = {
 
             if(!data.ok) throw { message: 'No se logro cargar los servicios'}
 
-            console.log('data crgaservicio:: ', data.data)
+            console.log('data crgaservicio:: ', data?.data[0])
 
-            await commit('SET_SERVICIOS_AGREGADOS', data.data)
+            await commit('SET_SERVICIOS_AGREGADOS', data?.data[0]?.analisis_asociado)
 
             loading.hide()
         } catch (error) {
@@ -482,6 +483,9 @@ const actions = {
 
         try { 
 
+
+            console.log('payload.item::', payload.item)
+
             const { data } =  await axios.post('/api/quotations/new/detail', {
                 active : 0,
                 quotation_id : payload.quotation_id,
@@ -489,9 +493,9 @@ const actions = {
                 price : payload.item.cost
             })
 
-            if(!data.ok) throw { message: 'No se logro agregar el item'}
-
-            await commit('ADD_SERVICIOS_ELEGIDOS', payload.item)
+            if(!data.ok) throw { message: 'No se logro agregar el item'} 
+            await commit('ADD_SERVICIOS_ELEGIDOS', data.data[0].analisis_asociado[0])
+            // await commit('ADD_SERVICIOS_ELEGIDOS', payload.item)
 
             loading.hide()
         } catch (error) {
@@ -766,7 +770,7 @@ const getters= {
 
         if(!state.servicios) return []
 
-        return state.servicios.map(item => ({ value: item.id, text: item.name }))
+        return state.servicios.map(item => ({ value: item.aasay_id, text: item.name }))
     },
     allCotizacionesFormat: state => {
 
