@@ -118,14 +118,13 @@
           <b-col>
           
             <b-form-group
-
-            :class="{ 'is-invalid': $v.form.pago_previo.$invalid }"  
-            label-size="sm"
-            label="Pago previo"
-            label-for="input-1"> 
-            <b-form-radio v-model="form.pago_previo.value" value="1" name="radio-size" size="sm">SÍ</b-form-radio>
-            <b-form-radio v-model="form.pago_previo.value" value="0"  name="radio-size" size="sm">NO</b-form-radio>
-         </b-form-group>
+              :class="{ 'is-invalid': $v.form.pago_previo.$invalid }"  
+              label-size="sm"
+              label="Pago previo"
+              label-for="input-1"> 
+              <b-form-radio v-model="form.pago_previo.value" value="1" name="radio-size" size="sm">SÍ</b-form-radio>
+              <b-form-radio v-model="form.pago_previo.value" value="0"  name="radio-size" size="sm">NO</b-form-radio>
+            </b-form-group>
           </b-col>
         </b-row>
       </b-card>

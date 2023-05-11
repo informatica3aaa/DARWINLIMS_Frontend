@@ -33,17 +33,61 @@
         </b-row>
         <b-row>
           <b-col>
-           
+            <b-form-group
+              label-size="sm"
+              description="Destinatario"
+              label="Destinatario"
+              label-for="input-1">
+              <basic-select
+                  :selectedOption="form.destinatario"
+                  @select="changeDestinatario"
+                  size="sm"  
+                  :options="destinatariosFormat"
+                  placeholder="Destinatario">
+              </basic-select>  
+              <div class="invalid-feedback">
+                El Destinatario es requerido
+              </div>
+            </b-form-group> 
 
+          </b-col>
+          <b-col>
+            <b-form-group
+            v-if="empresas.length == 0"
+            label-size="sm" 
+            label="Si el Destinatario no existe, puede también Crear nuevo Destinatario"
+              >
+            <b-button @click="newDestinatario"  variant="pdarwin" class="" size="sm">Crear nuevo Destinatario</b-button>
+
+            </b-form-group>
+
+
+          </b-col>
+
+        </b-row> 
+        <b-row>
+          <b-col> 
            <b-form-group
-           label-size="sm"
-           description="N° Cotización"
-           label="N° Cotización"
-           label-for="input-1">
-           <b-form-input size="sm"  id="input-1" v-model="form.cotizacion.value"   trim></b-form-input>
-         </b-form-group>
+            label-size="sm"
+            description="N° Cotización"
+            label="N° Cotización"
+            label-for="input-1">
+            <b-form-input size="sm"  id="input-1" v-model="form.cotizacion.value"   trim></b-form-input>
+          </b-form-group>
        
-       </b-col>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col> 
+            <b-form-group
+              :class="{ 'is-invalid': $v.form.pago_previo.$invalid }"  
+              label-size="sm"
+              label="Pago previo"
+              label-for="input-1"> 
+              <b-form-radio v-model="form.pago_previo.value" value="1" name="radio-size" size="sm">SÍ</b-form-radio>
+              <b-form-radio v-model="form.pago_previo.value" value="0"  name="radio-size" size="sm">NO</b-form-radio>
+            </b-form-group>
+          </b-col>
         </b-row>
         <b-row>
          
@@ -103,26 +147,7 @@
               </b-form-input>
           </b-form-group> 
           </b-col>
-        </b-row> 
-
-        <b-row>
-          <b-col>
-              <b-form-group
-                label-size="sm"
-                description="Destinatario"
-                label="Destinatario"
-                label-for="input-1">
-              <b-form-input 
-                size="sm" 
-                :disabled="true" 
-                v-model="form.destinatario.value"   
-                trim>
-              </b-form-input>
-          </b-form-group> 
-          </b-col>
-        </b-row> 
-
-
+        </b-row>  
       </b-card>
     </b-card-group>
     <b-card-group class="mt-1" deck>
@@ -305,6 +330,54 @@
         Crear cotización</b-button>
       </b-col>
     </b-row>
+    <b-modal ref="my-modal" size="lg" hide-footer title="crear nuevo destinatario">
+
+<b-row>
+    <b-col sm="6">
+        <b-form-group 
+        label-size="sm"
+        description="Nombre"
+        label="Nombre"
+        label-for="nombre">
+        <b-form-input :class="{ 'is-invalid': $v.form2.name.value.$invalid }"  size="sm" id="input-1" v-model="form.name.value"  trim></b-form-input>
+
+      </b-form-group> 
+
+    </b-col> 
+    <b-col sm="6">
+      <b-form-group 
+        label-size="sm"
+        description="Telefono"
+        label="Telefono"
+        label-for="Telefono">
+        <b-form-input :class="{ 'is-invalid': $v.form2.telefono.value.$invalid }"  size="sm" id="input-1" v-model="form.telefono.value"  trim></b-form-input>
+
+      </b-form-group>  
+
+    </b-col> 
+
+  </b-row>
+<b-row>
+    <b-col sm="6">
+        <b-form-group  
+        label-size="sm"
+        description="Correo"
+        label="Correo"
+        label-for="nombre">
+        <b-form-input :class="{ 'is-invalid': $v.form2.mail.value.$invalid }"  size="sm" id="input-1" v-model="form.mail.value"  trim></b-form-input>
+
+      </b-form-group> 
+
+    </b-col>  
+
+  </b-row>  
+  <b-row>
+    <b-col sm="12">
+   
+      <b-button @click="CrearNewDestinatario()" variant="dark" size="sm">Guardar</b-button>
+    </b-col>
+  </b-row>
+</b-modal>
  
   </div>
 </template>
@@ -338,6 +411,7 @@ export default {
     ...mapGetters('clientes', ['clientesFormat', 'proyectosFormat']), 
     ...mapGetters('cotizaciones', ['condicionesFormat' ]), 
     ...mapGetters('monedas', ['monedasFormat']), 
+    ...mapGetters('destinatarios', ['destinatariosFormat']), 
 
   },
   components: {
@@ -352,43 +426,48 @@ export default {
   }, 
   async mounted()
   {
-       await this.searchCondiciones(
-       {
-         loading: this.$loading,
-         toast : this.$toast,
-         active: "1",
-         tipo: "condiciones",
-         offset: 0,
-         limit: 20
-       })
+      await this.searchCondiciones(
+      {
+        loading: this.$loading,
+        toast : this.$toast,
+        active: "1",
+        tipo: "condiciones",
+        offset: 0,
+        limit: 20
+      })
 
-       await this.getAllMonedas(
-       {
-         loading: this.$loading,
-         toast : this.$toast,
-         active: "1",
-         tipo: "monedas",
-         offset: 0,
-         limit: 100
-       }) 
+      await this.getAllMonedas(
+      {
+        loading: this.$loading,
+        toast : this.$toast,
+        active: "1",
+        tipo: "monedas",
+        offset: 0,
+        limit: 100
+      }) 
 
-       console.log('cotiza:: ', this.cotiza)
-       this.form.cliente_rut.value = `${ this.cotiza.rut }-${ this.cotiza.dv }`
-       await this.comprobarCliente()
+      console.log('cotiza:: ', this.cotiza)
+      this.form.cliente_rut.value = `${ this.cotiza.rut }-${ this.cotiza.dv }`
+      await this.comprobarCliente()
 
-       this.form.inicio.value = this.cotiza.start_date
-       this.form.hasta.value = this.cotiza.expiration_date
-       this.form.destinatario.value = this.cotiza.for
-       this.form.proyecto.value = this.cotiza.project_id 
-       this.form.proyecto.text = this.cotiza.project 
-       this.form.condiciones.value = this.cotiza.general_condition_id 
-       this.form.condiciones.text =  this.cotiza.title 
-       this.form.especificaciones.value =  this.cotiza.specific_condition 
-       this.form.tiempo.value =  this.cotiza.estimated_days 
-       this.form.desde.value = moment(this.cotiza.start_date, "DD/MM/YYYY").format("YYYY-MM-DD").toString() 
-       this.form.hasta.value = moment(this.cotiza.expiration_date, "DD/MM/YYYY").format("YYYY-MM-DD").toString()  
-       this.form.moneda.value = this.cotiza.currency_id  
-       this.form.moneda.text = this.monedas.find(mo=> mo.id == this.cotiza.currency_id ).prefix
+      this.form.inicio.value = this.cotiza.start_date
+      this.form.hasta.value = this.cotiza.expiration_date
+      this.form.destinatario.value = this.cotiza.for
+      this.form.proyecto.value = this.cotiza.project_id 
+      this.form.proyecto.text = this.cotiza.project 
+      this.form.condiciones.value = this.cotiza.general_condition_id 
+      this.form.condiciones.text =  this.cotiza.title 
+      this.form.especificaciones.value =  this.cotiza.specific_condition 
+      this.form.tiempo.value =  this.cotiza.estimated_days 
+      this.form.pago_previo.value = this.cotiza.pago_previo
+      this.form.desde.value = moment(this.cotiza.start_date, "DD/MM/YYYY").format("YYYY-MM-DD").toString() 
+      this.form.hasta.value = moment(this.cotiza.expiration_date, "DD/MM/YYYY").format("YYYY-MM-DD").toString()  
+      this.form.moneda.value = this.cotiza.currency_id  
+      this.form.moneda.text = this.monedas.find(mo=> mo.id == this.cotiza.currency_id ).prefix
+
+
+      this.form.destinatario.value = this.cotiza.destinatario_id
+      this.form.destinatario.text = this.destinatariosFormat.find(des=> des.value == this.cotiza.destinatario_id ).text
 
        console.log(this.monedas.find(mo=> mo.id == this.cotiza.currency_id ).text, this.monedas)
 
@@ -402,12 +481,49 @@ export default {
     ...mapActions('monedas', ['getAllMonedas']),
     ...mapActions('clientes', ['getClientes', 'validaCliente']), 
     ...mapActions('proyectos', ['getProyectos']), 
+        ...mapActions('destinatarios', ['getDestinatarios', 'crearDestinatario']), 
     ...mapActions('cotizaciones', [
       'searchCondiciones', 
       'crearProyecto', 
       'crearCotizacion', 
       'setModena' 
     ]), 
+
+    async newDestinatario(){
+      // this.form.id.value =item
+      console.log("destinatario", this.form.destinatario)
+      this.$refs['my-modal'].show()
+
+
+    },
+    async CrearNewDestinatario(){
+
+      const payload = {}
+      payload.loading = this.$loading
+      payload.toast = this.$toast
+      payload.company_id = this.cotiza.company_id
+      payload.mail= this.form.mail.value,
+      payload.name=this.form.name.value
+      payload.telefono = this.form.telefono.value
+      payload.modulo = 'cotizaciones'
+
+      const destinatario = await this.crearDestinatario(payload)
+  
+
+      await this.getDestinatarios(
+      {
+        loading     : this.$loading,
+        toast       : this.$toast,
+        company_id  : this.cotiza.company_id,
+        modulo      : 'cotizaciones' 
+      })
+
+      //this.form.destinatario.text =
+      console.log(destinatario)
+
+      this.$refs['my-modal'].hide() 
+ 
+    },
 
     async newProyecto()
     {
@@ -443,7 +559,7 @@ export default {
     
       // console.log('proyecto', proyecto)
 
-    },
+    },  
     async comprobarCliente()
     {
 
@@ -471,10 +587,29 @@ export default {
 
       const cliente = await this.validaCliente(payload)
 
+      this.form.destinatario.value = ''
+      this.form.destinatario.text = ''
       
       this.form.cliente_nombre.value = cliente.name
       this.form.cliente_active.value = cliente.active ? 'Activo':'Desactivado'
       this.form.cotizacion.value = cliente.quotation_number 
+
+      console.log('cliente:: ', cliente)
+
+
+      await this.getDestinatarios(
+        {
+          loading     : this.$loading,
+          toast       : this.$toast,
+          company_id  : cliente.id,
+          modulo      : 'cotizaciones' 
+        })
+    },
+    async changeDestinatario(item)
+    {
+
+      this.form.destinatario.value = item.value
+      this.form.destinatario.text = item.text 
     },
     async changeCliente(item)
     {
@@ -516,14 +651,13 @@ export default {
 
 
       payload.loading = this.$loading
-      payload.toast = this.$toast
-      payload.accion = 'nueva_cotizacion'
-      payload.active = "0"
+      payload.toast = this.$toast 
       payload.expiration_date = this.form.hasta.value
       payload.company_id = this.cotiza.company_id
       payload.estimated_days = this.form.tiempo.value
       payload.proyect_id = this.form.proyecto.value
-      payload.destinatario = this.form.destinatario.value
+      payload.destinatario = this.form.destinatario.text
+      payload.destinatario_id = this.form.destinatario.value
 
       payload.currency_id = this.form.moneda.value
       payload.quotation_state_id = 5
@@ -533,6 +667,7 @@ export default {
       payload.start_date = this.form.desde.value
       payload.specific_condition = this.form.especificaciones.value
       payload.quotation_number = this.form.cotizacion.value
+      payload.pago_previo = this.form.pago_previo.value
 
       await this.crearCotizacion(payload) 
 
@@ -551,6 +686,13 @@ export default {
           destinatario : { value: { required } }, 
           proyecto : { value: { required } }, 
           especificaciones : { value: { required }}, 
+          pago_previo : { value: { required }}, 
+
+        },
+        form2: { 
+          mail : { value: { required }}, 
+          name : { value: { required }}, 
+          telefono : { value: { required }}, 
         }
   }
   ,data(){
@@ -573,6 +715,10 @@ export default {
         desde: { text: null, value: null, isError: false, error: null, class: "select-default" },
         hasta: { text: null, value: null, isError: false, error: null, class: "select-default" },
         cotizacion: { text: null, value: null, isError: false, error: null, class: "select-default" },
+        pago_previo: { text: null, value: null, isError: false, error: null, class: "select-default" }, 
+        mail: { text: null, value: null, isError: false, error: null, class: "select-default" },
+        name: { text: null, value: null, isError: false, error: null, class: "select-default" },  
+        telefono: { text: null, value: null, isError: false, error: null, class: "select-default" },
 
       }
       ,customToolbar: [
