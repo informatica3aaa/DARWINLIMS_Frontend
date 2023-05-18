@@ -128,6 +128,29 @@ const actions = {
         await commit('SET_MONEDA', payload)
 
     },
+    async confirmarCotizacion({commit}, payload) 
+    {   
+        let loading = payload.loading.show() 
+        console.log(commit)
+        try { 
+            const { data } =  await axios.post('/auth/confirmacion', payload, {
+                headers: {
+                    Authorization: payload.token
+                }})
+            if(!data.ok) throw { message: 'No se logro confirmar la cotización'}
+
+
+            loading.hide() 
+
+            return true
+
+        } catch (error) {
+            payload.toast.error("Error al confirmar la cotización")
+            loading.hide()
+            console.error('Error al confirmar la cotización:: ', error) 
+            return false
+        } 
+    },
     async download({commit}, payload) 
     {   
         let loading = payload.loading.show() 

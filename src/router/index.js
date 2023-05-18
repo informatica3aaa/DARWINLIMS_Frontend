@@ -10,6 +10,7 @@ import UploadView from '../views/icp/Upload'
 import CotizacionesNewView from '../views/cotizaciones/New'
 import CotizacionesNuevaVersionView from '../views/cotizaciones/NewVersion'
 import CotizacionesNewDosView from '../views/cotizaciones/Nueva'
+import CotizacionesRespuestaView from '../views/cotizaciones/Respuesta'
 import CotizacionesAprobarView from '../views/cotizaciones/Aprobar'
 import CotizacionListPorVencerView from '../views/cotizaciones/Vencer'
 import CotizacionVerView from '../views/cotizaciones/Ver'
@@ -51,6 +52,11 @@ const routes = [
         component: UploadView,
       },
     ]
+  },
+  {
+    path: '/quotations/confirmacion/:accion/:token',
+    name: 'cotizaciones_confirmacion',
+    component: CotizacionesRespuestaView 
   },
   {
     path: '/quotations',
