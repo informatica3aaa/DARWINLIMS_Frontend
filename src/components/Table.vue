@@ -573,6 +573,7 @@ export default {
         },
         async descargarDOC(item)
         {
+console.log("ITEMA:::::.", item)
             const payload = {}
             payload.loading = this.$loading
             payload.toast = this.$toast
@@ -581,13 +582,9 @@ export default {
             payload.download = 'word' 
 
             const data =  await this.download(payload)  
- 
-            await downloadPDFBase64([
-            {
-                documento: data, 
-                contentType: 'application/msword',
-                nombre: `${ item.id }.doc`
-            }]) 
+            // console.log("data;::::", data);
+            return data
+
         },
         async search()
         { 
