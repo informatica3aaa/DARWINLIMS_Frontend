@@ -17,7 +17,12 @@ axios.interceptors.request.use(async function(config) {
         return config
     }
 
+    if(config['headers']["Authorization"]) return config
+
+
+    
     let auth_token = store.getters['usuario/token']
+
 
     if(auth_token)
     {

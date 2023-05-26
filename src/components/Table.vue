@@ -264,14 +264,11 @@
                     <span class="text-darwin">
                         {{ row.item.company_name }}
                     </span>
-                </b-row>
+                </b-row> 
+             </template>
+             <template #cell(estado_notificacion)="">   
                 <b-row>
-                    <b-badge class="text-darwin">
-                        <small>
-                            <b-icon icon="envelope"></b-icon>
-                            {{ 'ESTADO DE NOTIFICACIÓN : ' + 'Enviada' }}
-                        </small>
-                    </b-badge>  
+                    <b-badge class="text-darwin"> <small>  <b-icon icon="envelope"></b-icon>  {{   'Enviada' }}  </small> </b-badge>  
                 </b-row> 
              </template>
              <template #cell(project)="row">   
@@ -673,6 +670,7 @@ export default {
             {  is_select: 'quotation_state', active: false, fil: true, key: 'quotation_state', label: 'Correo Notificación', class: 'text-center' },
             {  is_select: 'quotation_number', active: false, fil: true, key: 'quotation_number', label: 'Cotizacion', class: 'text-center'},
             {  is_select: 'company_name', active: false, fil: true, key: 'company_name', label: 'Cliente', class: 'text-center'},
+            {  is_select: 'estado_notificacion', active: false, fil: true, key: 'estado_notificacion', label: 'Est Noti.', class: 'text-center'},
             {  is_select: false, active: false, fil: true, key: 'project', label: 'Proyecto' , class: 'text-center'},
             {  is_select: false, active: false, fil: false, key: 'start_date', label: 'Inicio' , class: 'text-center'},
             {  is_select: 'expiration_date', active: false, fil: true,  key: 'expiration_date', label:'Expiracion', class: 'text-center'},

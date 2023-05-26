@@ -27,6 +27,9 @@ Vue.use(require('vue-moment'))
 Vue.config.productionTip = false  
 
  
+import VueBootstrapTypeahead from 'vue-bootstrap-typeahead' 
+Vue.component('vue-bootstrap-typeahead', VueBootstrapTypeahead)
+ 
 
 
 

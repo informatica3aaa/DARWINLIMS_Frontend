@@ -64,6 +64,27 @@
         header-bg-variant="darwin"
         header="Servicios seleccionado en estado temporal"
         header-tag="header"> 
+        <b-row>
+          <b-check v-model="modo_clasico">Modo clasico</b-check>
+        </b-row>
+        <div v-if="modo_clasico"> 
+          <vue-bootstrap-typeahead  
+            :serializer="re => re.name" 
+            placeholder="Resultados"
+            :data="resultados"
+            ref="typeahead"
+            @hit="selected"
+            @input="lookupUser"  
+            v-model="form.buscar">  
+              <template slot="suggestion" slot-scope="{ data }">
+              <div class="d-flex align-items-center"> 
+                <b>{{ data.name }} </b> <span class="text-muted"> , {{ data.assay_name }} : {{ data.technique_name }} : {{ data.digestion_name }} : {{ data.digestion_name }} </span>
+              </div>
+            </template>
+          </vue-bootstrap-typeahead>  
+
+        </div>
+        <div v-if="!modo_clasico">
         <b-row> 
           <b-col>
 
@@ -137,8 +158,8 @@
 
           </b-col>
         </b-row>
-        <b-row> 
-          <b-col>
+        <b-row>  
+            <b-col>
                 <b-form-group 
               label-size="sm"
               description="tipo de digestion "
@@ -169,7 +190,8 @@
 
              </b-form-group>
                
-          </b-col>
+          </b-col> 
+          
         </b-row> 
         <b-row class="mt-4"> 
           <b-col sm="12">
@@ -185,13 +207,14 @@
             </b-button-group>
           </b-col>
         </b-row>
-
+      
         <b-row class="mt-4">
           <b-col sm="12">
             <b-button  @click="showModal()" size="sm" variant="dark">Importar servicios desde una cotización existente</b-button>
           </b-col>
         </b-row>
-
+      </div>
+        <hr>
         <b-row class="mt-3"> 
             <b-col sm="12">
                 <h3>Servicios seleccionados en estado temporal</h3>
@@ -373,7 +396,9 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { BasicSelect } from 'vue-search-select'
 import Swal from "sweetalert2"
+import { debounce } from 'underscore' 
 import route from './../../router' 
+import axios from 'axios'
 
 export default {
   name: 'CotizacionesNewDosView',
@@ -470,11 +495,44 @@ export default {
 
       await this.getAllCotizaciones(
       {
-          loading: this.$loading,
-          toast : this.$toast 
+        loading: this.$loading,
+        toast : this.$toast,
+        active: 1
 
       }) 
       this.$refs['my-modal'].show()
+    },
+    lookupUser: debounce(function(addr) {  
+        this.getAddresses(addr) 
+      }, 500),
+      async selected($event)
+      {   
+          
+        await this.setServicios(
+        {
+          loading: this.$loading,
+          toast : this.$toast, 
+          active: '1', 
+          tipo: 'servicio',
+          assay_id: $event.assay_id,
+          offset : 0,
+          limit:10
+       }
+      )
+      },
+      async getAddresses(query) {
+
+        if(!query) return 
+
+        try {
+          const { data } = await  axios.post('/api/quotations/clasico', {query})
+
+          console.log( 'resultado:: ', data) 
+          this.resultados = data.data
+ 
+        } catch (error) {
+          console.error("Error al obtener direcciones:: ", error)
+        } 
     },
     async elegirServicio(item)
     { 
@@ -650,6 +708,8 @@ export default {
   {
     return { 
 
+      modo_clasico: null,
+      resultados:[],
       filters: {
             id: '',
             issuedBy: '',
@@ -676,7 +736,7 @@ export default {
             {  is_select: 'Digestión', active: false, fil: true, key: 'digestion', label: 'Digestión', class: 'text-center'},
             // {  is_select: 'Unidad', active: false, fil: true, key: 'digestion_name', label: 'Digestión', class: 'text-center'},
             // {  is_select: 'Elemento', active: false, fil: true, key: 'digestion_name', label: 'Digestión', class: 'text-center'},
-            {  is_select: 'cost', active: false, fil: true, key: 'cost', label: 'Valor', class: 'text-center'},
+            {  is_select: 'price', active: false, fil: true, key: 'price', label: 'Valor', class: 'text-center'},
             {  is_select: 'Acciones', active: false, fil: true, key: 'Acciones', label: 'Acciones', class: 'text-center'}
       ],
       form: { 
@@ -687,7 +747,8 @@ export default {
         tipo_unidad: { text: null, value: null, isError: false, error: null, class: "select-default" },
         tipo_elemento: { text: null, value: null, isError: false, error: null, class: "select-default" },
         servicio: { text: null, value: null, isError: false, error: null, class: "select-default" },
-        cotizacion_all: { text: null, value: null, isError: false, error: null, class: "select-default" }
+        cotizacion_all: { text: null, value: null, isError: false, error: null, class: "select-default" },
+        buscar: { text: null, value: null, isError: false, error: null, class: "select-default" }
       }
      
     }
