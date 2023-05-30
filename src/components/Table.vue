@@ -305,6 +305,7 @@
                     <template #button-content>
                         <span class="sr-only">Opciones</span>
                     </template> 
+                    <b-dropdown-item  @click="clonar(row.item)">Clonar</b-dropdown-item>
                     <b-dropdown-item  @click="nuevaVersion(row.item)">Nueva versión</b-dropdown-item>
                     <b-dropdown-item  @click="verHistorico(row.item)">Ver historial</b-dropdown-item>
                     <b-dropdown-item  @click="descargarPDF(row.item)">Descargar PDF</b-dropdown-item> 
@@ -467,6 +468,23 @@ export default {
         {
             this.form.quotation_state_id.value = id.value
             this.form.quotation_state_id.text = id.text
+        },
+        async clonar(item)
+        {  
+
+
+            const payload = {}
+            payload.loading = this.$loading
+            payload.toast = this.$toast
+            payload.item = item
+
+            await this.setCotizacion(payload)
+            router.push({
+                name: 'cotizaciones_clonar',  
+                params: {
+                        id: item.id
+                }} 
+            )
         },
         async nuevaVersion(item)
         {  
