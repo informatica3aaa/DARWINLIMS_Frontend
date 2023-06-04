@@ -624,22 +624,42 @@ export default {
             
         },
         generateWordDocument(datos){
+            
             const table = new docx.Table({
+                borders: {
+                    top: {
+                        color:"FFFFFF",
+                        },
+                    bottom: {
+                        color: "FFFFFF",
+                    },
+                    left: {
+                        color: "#FFFFFF",
+                    },
+                    right: {
+                        color: "FFFFFF",
+                    }
+                    },
             width:{
-                size:4355,
+                size: 9000,
                 type: docx.WidthType.DXA,
             },
             rows: [
              new docx.TableRow({
+                bold: true,
                 children: [
                     new docx.TableCell({
                         columnSpan: 2,
                         children: [new docx.Paragraph("1. DATOS GENERALES")],
+                        verticalAlign: docx.VerticalAlign.TOP,
                     }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph(datos.quotation_number)],
-                    }),
+                    
                 ],
+                top: {
+                    style: docx.BorderStyle.NONE,
+                    size: 3,
+                    color: "FF0000",
+                    },
             }),
             new docx.TableRow({
                 children: [
@@ -722,13 +742,154 @@ export default {
                 ],
             }),
             ]
-    });
-    
-    const doc = new docx.Document({
+            });
+            const tableHeader = new docx.Table({
+            width:{
+                size: 9000,
+                type: docx.WidthType.DXA,
+            },
+            rows: [
+            new docx.TableRow({
+                rowSpan: 2,
+                children: [
+                    new docx.TableCell({
+                        children: [],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Oferta Comercial")],
+                    }),
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.quotation_number)],
+                    }),
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Laboratorio de Análisis Químico")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Andes Analytical Assay SpA ")],
+                    }),
+                ],
+            })
+            ]
+            });
+            const tableFooter = new docx.Table({
+            width:{
+                size: 9000,
+                type: docx.WidthType.DXA,
+            },
+            rows: [
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("El Totoral 651, Barrio Industrial Buenaventura ")],
+                    })
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Quilicura, Santiago - Fono (56-2) 2747 1265")],
+                    })
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("www.3aaa.cl")],
+                    })
+                ],
+            })
+            ]
+            });
+            const tableBody = new docx.Table({
+            width:{
+                size: 9000,
+                type: docx.WidthType.DXA,
+            },
+            rows: [
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        columnSpan: 4,
+                        children: [new docx.Paragraph("2. RESUMEN OFERTA COMERCIAL")],
+                    })
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Tipo")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Ítem")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Valor")],
+                    }),
+                ],
+            }),
+            
+            ]
+            });
+            let tableBody2 ;
+
+            for(let index = 0; index < datos.analisis_asociado.length; index++){
+                console.log("inidice",index )
+            tableBody2 = new docx.Table({
+            width:{
+                size: 9000,
+            },
+            rows: [
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(index)],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.analisis_asociado[index].tipo)],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.analisis_asociado[index].assay_name)],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.analisis_asociado[index].divisa +'.'+datos.analisis_asociado[index].price)],
+                    }),
+                ],
+            }),
+            
+            ]
+            });
+
+            }
+   
+            const doc = new docx.Document({
         sections: [{
-            children: [table],
+            headers: {
+                default: new docx.Header({
+                    children: [tableHeader],
+                }),
+            },
+            footers: {
+                default: new docx.Footer({
+                    children: [tableFooter],
+                }),
+            },
+            children: [table, tableBody, tableBody2],
         }],
-    });
+             });
 
 
         docx.Packer.toBlob(doc).then((blob) => {
