@@ -590,8 +590,11 @@ export default {
       this.form.destinatario.value = ''
       this.form.destinatario.text = ''
       
+
       this.form.cliente_nombre.value = cliente.name
       this.form.cliente_active.value = cliente.active ? 'Activo':'Desactivado'
+      
+      console.log('AAAAAAAAAAAAAAAAAAA::', cliente.quotation_number )
       this.form.cotizacion.value = cliente.quotation_number 
 
       console.log('cliente:: ', cliente)
