@@ -390,6 +390,8 @@ import { ModelSelect } from 'vue-search-select'
 import { downloadPDFBase64 } from './../util/pdfHelper'
 import router from './../router'
 import Swal from "sweetalert2"
+import * as docx from 'docx'
+import saveAs from 'file-saver'
 
 export default {
     name: 'TableComponent',
@@ -573,7 +575,7 @@ export default {
         },
         async descargarDOC(item)
         {
-console.log("ITEMA:::::.", item)
+// console.log("ITEMA:::::.", item)
             const payload = {}
             payload.loading = this.$loading
             payload.toast = this.$toast
@@ -582,7 +584,8 @@ console.log("ITEMA:::::.", item)
             payload.download = 'word' 
 
             const data =  await this.download(payload)  
-            // console.log("data;::::", data);
+            console.log("data;::::", data);
+            await this.generateWordDocument(data[0])
             return data
 
         },
@@ -620,7 +623,120 @@ console.log("ITEMA:::::.", item)
 
             
         },
+        generateWordDocument(datos){
+            const table = new docx.Table({
+            width:{
+                size:4355,
+                type: docx.WidthType.DXA,
+            },
+            rows: [
+             new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        columnSpan: 2,
+                        children: [new docx.Paragraph("1. DATOS GENERALES")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.quotation_number)],
+                    }),
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Número")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.quotation_number)],
+                    }),
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Vigencia")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.start_date + ' al '+ datos.expiration_date)],
+                    }),
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Cliente")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.fantasy_name)],
+                    }),
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Rut Cliente")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.rut+'-'+datos.dv)],
+                    }),
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Proyecto")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.project ? datos.project : '')],
+                    }),
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Días estimados")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.estimated_days)],
+                    }),
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Ejecutivo")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.user_creator)],
+                    }),
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("Dirigido a")],
+                    }),
+                    new docx.TableCell({
+                        children: [new docx.Paragraph(datos.for)],
+                    }),
+                ],
+            }),
+            ]
+    });
+    
+    const doc = new docx.Document({
+        sections: [{
+            children: [table],
+        }],
+    });
 
+
+        docx.Packer.toBlob(doc).then((blob) => {
+            console.log(blob);
+            saveAs(blob, "example.docx");
+            console.log("Document created successfully");
+        });
+    }
     },
     data: function(){
       return {
