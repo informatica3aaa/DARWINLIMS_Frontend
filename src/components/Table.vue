@@ -99,14 +99,14 @@
                                 <div class="col-sm-2">
                                     <div class="card mb-4">
                                         <div class="card-body">
-                                            <h6 class="card-title">{{ total  }} Total</h6>
+                                            <h6 class="card-title">{{ desierta  }} Desierta</h6>
                                             <div class="text-right">
                                                 <h2 class="font-weight-light mb-0">
                                                     <i class="ti-arrow-down text-danger"></i> 
                                                 </h2>
                                             </div>
-                                            <span class="text-dark">100%</span>
-                                            <b-progress animated variant="dark" :value="total"></b-progress>
+                                            <span class="text-dark">{{  ((desierta *100)/total).toFixed(2) }}%</span>
+                                            <b-progress animated variant="dark" :value="(desierta*100)/total"></b-progress>
                                         </div>
                                     </div>
                                 </div>
@@ -233,6 +233,7 @@
                     <b-badge v-if="row.item.quotation_state == 'Ganada'" class="bg-success" variant="info">{{ row.item.quotation_state }}</b-badge>  
                    <b-badge v-if="row.item.quotation_state == 'Perdida'" class="bg-danger" variant="info">{{ row.item.quotation_state }}</b-badge>  
                    <b-badge v-if="row.item.quotation_state == 'Negociación'" class="bg-warning" variant="info">{{ row.item.quotation_state }}</b-badge>  
+                   <b-badge v-if="row.item.quotation_state == 'Desierta'" class="bg-dark" variant="info">{{ row.item.quotation_state }}</b-badge>  
                 </b-col>
                 <b-col>
                     <b-badge class="text-darwin">
@@ -266,9 +267,10 @@
                     </span>
                 </b-row> 
              </template>
-             <template #cell(estado_notificacion)="">   
+             <template #cell(estado_notificacion)="row">   
                 <b-row>
-                    <b-badge class="text-darwin"> <small>  <b-icon icon="envelope"></b-icon>  {{   'Enviada' }}  </small> </b-badge>  
+                    <b-badge v-if="!row.item.estado_notificacion" class="text-secondary"> <small>  <b-icon icon="envelope"></b-icon>  POR ENVIAR  </small> </b-badge>  
+                    <b-badge v-if="row.item.estado_notificacion" class="text-success"> <small>  <b-icon icon="envelope"></b-icon>  {{   row.item.estado_notificacion }}  </small> </b-badge>  
                 </b-row> 
              </template>
              <template #cell(project)="row">   
@@ -435,6 +437,7 @@ export default {
             if(item.estado == 'Perdida')  this.perdida = item.cant    
             if(item.estado == 'Por adjudicar')  this.porAdjudicar = item.cant 
             if(item.estado == 'Negociación')  this.negociacion = item.cant 
+            if(item.estado == 'Desierta')  this.desierta = item.cant 
         }
 
     },
@@ -642,6 +645,7 @@ export default {
     },
     data: function(){
       return {
+            desierta: 0,
             ganadas: 0,
             perdida: 0,
             porAdjudicar: 0,
