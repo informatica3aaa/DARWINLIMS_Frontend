@@ -828,7 +828,7 @@ export default {
             new docx.TableRow({
                 children: [
                     new docx.TableCell({
-                        children: [new docx.Paragraph("")],
+                        children: [new docx.Paragraph("id")],
                     }),
                     new docx.TableCell({
                         children: [new docx.Paragraph("Tipo")],
@@ -844,28 +844,34 @@ export default {
             
             ]
             });
-            let tableBody2 ;
-
-            for(let index = 0; index < datos.analisis_asociado.length; index++){
-                console.log("inidice",index )
-            tableBody2 = new docx.Table({
+            
+            const tableBody2 = new docx.Table({
             width:{
                 size: 9000,
+                type: docx.WidthType.DXA,
             },
             rows: [
             new docx.TableRow({
                 children: [
                     new docx.TableCell({
-                        children: [new docx.Paragraph(index)],
+                        columnSpan: 4,
+                        children: [new docx.Paragraph("2. RESUMEN OFERTA COMERCIAL")],
+                    })
+                ],
+            }),
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [new docx.Paragraph("id")],
                     }),
                     new docx.TableCell({
-                        children: [new docx.Paragraph(datos.analisis_asociado[index].tipo)],
+                        children: [new docx.Paragraph("Tipo")],
                     }),
                     new docx.TableCell({
-                        children: [new docx.Paragraph(datos.analisis_asociado[index].assay_name)],
+                        children: [new docx.Paragraph("Ítem")],
                     }),
                     new docx.TableCell({
-                        children: [new docx.Paragraph(datos.analisis_asociado[index].divisa +'.'+datos.analisis_asociado[index].price)],
+                        children: [new docx.Paragraph("Valor")],
                     }),
                 ],
             }),
@@ -873,7 +879,31 @@ export default {
             ]
             });
 
-            }
+            // for(let index = 0; index < datos.analisis_asociado.length; index++){
+            //     console.log("INDEX;;;;;;;;;", index);
+            // let tableBody3 = new docx.Table({
+            // rows: [
+            // new docx.TableRow({
+            //     children: [
+            //         new docx.TableCell({
+            //             children: [new docx.Paragraph(index)],
+            //         }),
+            //         new docx.TableCell({
+            //             children: [new docx.Paragraph("Tipo")],
+            //         }),
+            //         new docx.TableCell({
+            //             children: [new docx.Paragraph("Ítem")],
+            //         }),
+            //         new docx.TableCell({
+            //             children: [new docx.Paragraph("Valor")],
+            //         }),
+            //     ],
+            // }),
+            
+            // ]
+            // });
+            // tableBody2.push(tableBody3)
+            // }
    
             const doc = new docx.Document({
         sections: [{
