@@ -6,9 +6,24 @@
         header-bg-variant="darwin"
         header="Datos de la cotización"
         header-tag="header"> 
-        <b-row> 
+        <b-row>
+          <b-col>
+            <b-form-group 
+              label-size="sm"
+              description="Nombre cliente"
+              label="Seleccione cliente"
+              label-for="input-1">
+              <basic-select
+                  :selectedOption="form.cliente"
+                  @select="changeCliente"
+                  size="sm"  
+                  :options="clientesFormat"
+                  placeholder="Cliente">
+              </basic-select> 
+            </b-form-group>
+          </b-col>
           <b-col> 
-            <b-form-group   
+            <b-form-group  
             label-size="sm"
             description="Run del cliente"
             label="Rut Cliente"
@@ -17,10 +32,11 @@
             :class="{ 'is-invalid': $v.form.cliente_rut.value.$invalid }"  
             size="sm">
                 <b-form-input  
-                :disabled="true"
                 :class="{ 'is-invalid': $v.form.cliente_rut.value.$invalid }" 
                  v-model="form.cliente_rut.value" trim></b-form-input>
-        
+            <b-input-group-append>
+              <b-button @click="comprobarCliente" :disabled="!form.cliente_rut.value"  variant="pdarwin">Comprobar</b-button>
+            </b-input-group-append>
           </b-input-group>
           <div class="invalid-feedback">
                 El RUT es requerido
@@ -31,6 +47,28 @@
           </b-col>
 
         </b-row>
+        <b-row>
+          <b-col>
+              <b-form-group
+            label-size="sm"
+            description="Estado cliente"
+            label="Estado cliente"
+            label-for="input-1">
+            <b-form-input size="sm" :disabled="true" v-model="form.cliente_active.value"   trim></b-form-input>
+          </b-form-group> 
+          
+          </b-col>
+          <b-col>
+            <b-form-group
+            label-size="sm"
+            description="Nombre cliente"
+            label="Nombre cliente"
+            label-for="input-1">
+            <b-form-input size="sm" :disabled="true" id="input-1" v-model="form.cliente_nombre.value"   trim></b-form-input>
+          </b-form-group>
+
+          </b-col>
+        </b-row> 
         <b-row>
           <b-col>
             <b-form-group
@@ -88,33 +126,7 @@
               <b-form-radio v-model="form.pago_previo.value" value="0"  name="radio-size" size="sm">NO</b-form-radio>
             </b-form-group>
           </b-col>
-        </b-row>
-        <b-row>
-         
-         <b-col>
-           <b-form-group
-           label-size="sm"
-           description="Nombre cliente"
-           label="Nombre cliente"
-           label-for="input-1">
-           <b-form-input size="sm" :disabled="true" id="input-1" v-model="form.cliente_nombre.value"   trim></b-form-input>
-         </b-form-group>
-
-         </b-col>
-       </b-row>
-
-        <b-row>
-          <b-col>
-              <b-form-group
-                label-size="sm"
-                description="Estado del  cliente"
-                label="Estado cliente"
-                label-for="input-1">
-            <b-form-input size="sm" :disabled="true" v-model="form.cliente_active.value"   trim></b-form-input>
-            </b-form-group> 
-          </b-col>
-        </b-row> 
-
+        </b-row>  
         <b-row>
           <b-col>
               <b-form-group
@@ -426,7 +438,8 @@ export default {
   }, 
   async mounted()
   {
-      await this.searchCondiciones(
+
+    await Promise.allSettled([this.searchCondiciones(
       {
         loading: this.$loading,
         toast : this.$toast,
@@ -434,17 +447,18 @@ export default {
         tipo: "condiciones",
         offset: 0,
         limit: 20
-      })
-
-      await this.getAllMonedas(
-      {
-        loading: this.$loading,
-        toast : this.$toast,
-        active: "1",
-        tipo: "monedas",
-        offset: 0,
-        limit: 100
-      }) 
+      }),
+      this.getAllMonedas(
+       {
+         loading: this.$loading,
+         toast : this.$toast,
+         active: "1",
+         tipo: "monedas",
+         offset: 0,
+         limit: 100
+       })
+      ]) 
+      
 
       console.log('cotiza:: ', this.cotiza)
       this.form.cliente_rut.value = `${ this.cotiza.rut }-${ this.cotiza.dv }`
@@ -590,11 +604,10 @@ export default {
       this.form.destinatario.value = ''
       this.form.destinatario.text = ''
       
-
-      this.form.cliente_nombre.value = cliente.name
+      this.form.cliente_nombre.value = cliente.name 
+      this.form.cliente_nombre.text = cliente.name 
+      console.log('this.form.cliente_nombre>>', this.form.cliente_nombre)
       this.form.cliente_active.value = cliente.active ? 'Activo':'Desactivado'
-      
-      console.log('AAAAAAAAAAAAAAAAAAA::', cliente.quotation_number )
       this.form.cotizacion.value = cliente.quotation_number 
 
       console.log('cliente:: ', cliente)

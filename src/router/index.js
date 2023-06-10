@@ -9,6 +9,7 @@ import CotizacionesView from '../views/cotizaciones/Index'
 import UploadView from '../views/icp/Upload'
 import CotizacionesNewView from '../views/cotizaciones/New'
 import CotizacionesNuevaVersionView from '../views/cotizaciones/NewVersion'
+import CotizacionesClonarView from '../views/cotizaciones/Clonar'
 import CotizacionesNewDosView from '../views/cotizaciones/Nueva'
 import CotizacionesRespuestaView from '../views/cotizaciones/Respuesta'
 import CotizacionesAprobarView from '../views/cotizaciones/Aprobar'
@@ -79,6 +80,12 @@ const routes = [
         path: '/quotations/addfromparent/:id',
         name: 'cotizaciones_nueva_version',
         component: CotizacionesNuevaVersionView,
+        beforeEnter: auth,
+      },
+      {
+        path: '/quotations/clonar/:id',
+        name: 'cotizaciones_clonar',
+        component: CotizacionesClonarView,
         beforeEnter: auth,
       },
       {

@@ -2,11 +2,11 @@ import axios from 'axios'
 import route from '../../router'
 
 const state = {
+    cotiza: null,
+    totalRows: 0,
     cotizaciones: [],
     condiciones: [],
     cotizaciones_historicas: [],
-    cotiza: null,
-    totalRows: 0,
     servicios: [],
     servicios_agregados: [],
     servicios_elegidos: [],
@@ -117,16 +117,60 @@ const mutations = {
     SET_ESTADO_COTIZACIONES(state, payload)
     {
         state.estado_cotizaciones = payload.data
+    },
+    CLEAR_ALL(state)
+    {
+        state.cotizaciones=[]
+        state.condiciones=[]
+        state.cotizaciones_historicas=[]
+        state.servicios=[]
+        state.servicios_agregados=[]
+        state.servicios_elegidos=[]
+        state.cotizaciones_historico=[]
+        state.cotizaciones_por_aprobar=[]
+        state.tipos_ensayos=[]
+        state.tipos_muestras=[]
+        state.tipos_digestiones=[]
+        state.tipos_tecnicas=[]
+        state.all_cotizaciones=[]
+        state.estado_cotizaciones=[]
     }
 
 }
 
 const actions = {
 
+    async clearAll({commit} )
+    {
+        await commit('CLEAR_ALL')
+
+    },
     async setModena({commit}, payload )
     {
         await commit('SET_MONEDA', payload)
 
+    },
+    async getAllCotizaciones({commit}, payload) 
+    {   
+        let loading = payload.loading.show() 
+        console.log(commit)
+        try { 
+            const { data } =  await axios.post('/api/quotations/allquo', payload)
+
+            if(!data.ok) throw { message: 'No se logro confirmar la cotización'}
+
+            console.log('cotizacioens:: ', data.data)
+            await commit('SET_ALL_COTIZACIONES', data.data)
+            loading.hide() 
+
+            return true
+
+        } catch (error) {
+            payload.toast.error("Error al confirmar la cotización")
+            loading.hide()
+            console.error('Error al confirmar la cotización:: ', error) 
+            return false
+        } 
     },
     async confirmarCotizacion({commit}, payload) 
     {   
@@ -583,7 +627,7 @@ const actions = {
             payload.toast.success("Cotizacion creada")
             console.log('NUEVA COTIZACION::::', data)
             await commit('SET_COTIZACION', data.data[0])
-            await commit('SET_SERVICIOS_AGREGADOS', [])
+            await commit('SET_SERVICIOS_AGREGADOS', []) 
             //await commit('CLEAR_SERVICIOS_ELEGIDOS')
 
             const asociados = data.data[0]?.analisis_asociado || [] 
@@ -620,6 +664,7 @@ const actions = {
             payload.toast.success("Cotizacion Finalizada con exito") 
 
             await commit('SET_COTIZACION', null)
+            await commit('SET_SERVICIOS_AGREGADOS', []) 
 
         } catch (error) {
             payload.toast.error("Error en el new end")

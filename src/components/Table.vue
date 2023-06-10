@@ -99,14 +99,14 @@
                                 <div class="col-sm-2">
                                     <div class="card mb-4">
                                         <div class="card-body">
-                                            <h6 class="card-title">{{ total  }} Total</h6>
+                                            <h6 class="card-title">{{ desierta  }} Desierta</h6>
                                             <div class="text-right">
                                                 <h2 class="font-weight-light mb-0">
                                                     <i class="ti-arrow-down text-danger"></i> 
                                                 </h2>
                                             </div>
-                                            <span class="text-dark">100%</span>
-                                            <b-progress animated variant="dark" :value="total"></b-progress>
+                                            <span class="text-dark">{{  ((desierta *100)/total).toFixed(2) }}%</span>
+                                            <b-progress animated variant="dark" :value="(desierta*100)/total"></b-progress>
                                         </div>
                                     </div>
                                 </div>
@@ -233,6 +233,7 @@
                     <b-badge v-if="row.item.quotation_state == 'Ganada'" class="bg-success" variant="info">{{ row.item.quotation_state }}</b-badge>  
                    <b-badge v-if="row.item.quotation_state == 'Perdida'" class="bg-danger" variant="info">{{ row.item.quotation_state }}</b-badge>  
                    <b-badge v-if="row.item.quotation_state == 'Negociación'" class="bg-warning" variant="info">{{ row.item.quotation_state }}</b-badge>  
+                   <b-badge v-if="row.item.quotation_state == 'Desierta'" class="bg-dark" variant="info">{{ row.item.quotation_state }}</b-badge>  
                 </b-col>
                 <b-col>
                     <b-badge class="text-darwin">
@@ -264,14 +265,12 @@
                     <span class="text-darwin">
                         {{ row.item.company_name }}
                     </span>
-                </b-row>
+                </b-row> 
+             </template>
+             <template #cell(estado_notificacion)="row">   
                 <b-row>
-                    <b-badge class="text-darwin">
-                        <small>
-                            <b-icon icon="envelope"></b-icon>
-                            {{ 'ESTADO DE NOTIFICACIÓN : ' + 'Enviada' }}
-                        </small>
-                    </b-badge>  
+                    <b-badge v-if="!row.item.estado_notificacion" class="text-secondary"> <small>  <b-icon icon="envelope"></b-icon>  POR ENVIAR  </small> </b-badge>  
+                    <b-badge v-if="row.item.estado_notificacion" class="text-success"> <small>  <b-icon icon="envelope"></b-icon>  {{   row.item.estado_notificacion }}  </small> </b-badge>  
                 </b-row> 
              </template>
              <template #cell(project)="row">   
@@ -308,6 +307,7 @@
                     <template #button-content>
                         <span class="sr-only">Opciones</span>
                     </template> 
+                    <b-dropdown-item  @click="clonar(row.item)">Clonar</b-dropdown-item>
                     <b-dropdown-item  @click="nuevaVersion(row.item)">Nueva versión</b-dropdown-item>
                     <b-dropdown-item  @click="verHistorico(row.item)">Ver historial</b-dropdown-item>
                     <b-dropdown-item  @click="descargarPDF(row.item)">Descargar PDF</b-dropdown-item> 
@@ -439,6 +439,7 @@ export default {
             if(item.estado == 'Perdida')  this.perdida = item.cant    
             if(item.estado == 'Por adjudicar')  this.porAdjudicar = item.cant 
             if(item.estado == 'Negociación')  this.negociacion = item.cant 
+            if(item.estado == 'Desierta')  this.desierta = item.cant 
         }
 
     },
@@ -472,6 +473,23 @@ export default {
         {
             this.form.quotation_state_id.value = id.value
             this.form.quotation_state_id.text = id.text
+        },
+        async clonar(item)
+        {  
+
+
+            const payload = {}
+            payload.loading = this.$loading
+            payload.toast = this.$toast
+            payload.item = item
+
+            await this.setCotizacion(payload)
+            router.push({
+                name: 'cotizaciones_clonar',  
+                params: {
+                        id: item.id
+                }} 
+            )
         },
         async nuevaVersion(item)
         {  
@@ -931,6 +949,7 @@ export default {
     },
     data: function(){
       return {
+            desierta: 0,
             ganadas: 0,
             perdida: 0,
             porAdjudicar: 0,
@@ -977,6 +996,7 @@ export default {
             {  is_select: 'quotation_state', active: false, fil: true, key: 'quotation_state', label: 'Correo Notificación', class: 'text-center' },
             {  is_select: 'quotation_number', active: false, fil: true, key: 'quotation_number', label: 'Cotizacion', class: 'text-center'},
             {  is_select: 'company_name', active: false, fil: true, key: 'company_name', label: 'Cliente', class: 'text-center'},
+            {  is_select: 'estado_notificacion', active: false, fil: true, key: 'estado_notificacion', label: 'Est Noti.', class: 'text-center'},
             {  is_select: false, active: false, fil: true, key: 'project', label: 'Proyecto' , class: 'text-center'},
             {  is_select: false, active: false, fil: false, key: 'start_date', label: 'Inicio' , class: 'text-center'},
             {  is_select: 'expiration_date', active: false, fil: true,  key: 'expiration_date', label:'Expiracion', class: 'text-center'},
