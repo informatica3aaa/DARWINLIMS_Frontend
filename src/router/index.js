@@ -34,6 +34,7 @@ const routes = [
   },
   {
     path: '/home',
+    beforeEnter: auth,
     name: 'home',
     component: HomeView,
 

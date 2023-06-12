@@ -11,7 +11,7 @@
                         label-cols-sm="7" 
                         label-align-sm="right"
                         label-size="sm"
-                        class="mb-0 pl-0"
+                        class="mb-0 pl-0 h6 small"
                         >
                         <model-select 
                             id="per-page-select"
@@ -26,16 +26,11 @@
                         <div class="row">
                             <div class="col-sm-2">
                                 <div class="card mb-2">
-                                    <div class="card-body">
+                                    <div class="card-body pt-1">
                                         <h6 class="card-title"> 
-                                            {{ ganadas  }} Ganadas
-                                        </h6>
-                                        <div class="text-right">
-                                            <h2 class="font-weight-light mb-0">
-                                                <i class="ti-arrow-up text-success"></i>  
-                                            </h2> 
-                                        </div>
-                                        <span class="text-success">{{ ((ganadas*100)/total).toFixed(2)  }}%</span>
+                                            <small>{{ ganadas  }} Ganadas</small>
+                                        </h6> 
+                                        <span class="text-success h6">{{ ((ganadas*100)/total).toFixed(2)  }}%</span>
                                         <b-progress animated variant="success" :value="(ganadas*100)/total"></b-progress>
                                       
                                     </div>
@@ -43,69 +38,45 @@
                             </div>
                             <div class="col-sm-2">
                                 <div class="card mb-4">
-                                    <div class="card-body">
-                                        <h6 class="card-title">{{ pendiente  }} Pendiente</h6>
-                                        <div class="text-right">
-                                            <h2 class="font-weight-light mb-0">
-                                                <i class="ti-arrow-up text-info"></i> 
-                                            </h2>
-                                        </div>
-                                        <span class="text-info">{{ ((pendiente*100)/total).toFixed(2)  }}%</span>
+                                    <div class="card-body pt-1">
+                                        <h6 class="card-title"><small>{{ pendiente  }} Pendiente</small></h6> 
+                                        <span class="text-info h6">{{ ((pendiente*100)/total).toFixed(2)  }}%</span>
                                         <b-progress animated variant="info" :value="(pendiente*100)/total"></b-progress>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="card mb-4">
-                                    <div class="card-body">
-                                        <h6 class="card-title">  {{ porAdjudicar  }} Por&nbsp;Adjudicar</h6>
-                                        <div class="text-right">
-                                            <h2 class="font-weight-light mb-0">
-                                                <i class="ti-arrow-up text-primary"></i>  </h2> 
-                                            </div>
-                                            <span class="text-primary">{{ ((porAdjudicar*100)/total).toFixed(2)  }}%</span>
+                                    <div class="card-body pt-1">
+                                        <h6 class="card-title"> <small> {{ porAdjudicar  }} Por&nbsp;Adjudicar</small></h6> 
+                                            <span class="text-primary h6">{{ ((porAdjudicar*100)/total).toFixed(2)  }}%</span>
                                             <b-progress animated variant="primary" :value="(porAdjudicar*100)/total"></b-progress>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="card mb-4">
-                                        <div class="card-body">
-                                            <h6 class="card-title">{{ perdida  }} Perdida</h6>
-                                            <div class="text-right">
-                                                <h2 class="font-weight-light mb-0">
-                                                    <i class="ti-arrow-down text-danger"></i> 
-                                                </h2>
-                                            </div>
-                                            <span class="text-danger">{{ ((perdida*100)/total).toFixed(2)  }}%</span>
+                                        <div class="card-body pt-1">
+                                            <h6 class="card-title"><small>{{ perdida  }} Perdida</small></h6> 
+                                            <span class="text-danger h6">{{ ((perdida*100)/total).toFixed(2)  }}%</span>
                                             <b-progress animated variant="danger" :value="(perdida*100)/total"></b-progress>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="card mb-4">
-                                        <div class="card-body">
-                                            <h6 class="card-title">{{ negociacion  }} Negociación</h6>
-                                            <div class="text-right">
-                                                <h2 class="font-weight-light mb-0">
-                                                    <i class="ti-arrow-down text-danger"></i> 
-                                                </h2>
-                                            </div>
-                                            <span class="text-warning">{{  ((negociacion *100)/total).toFixed(2) }}%</span>
+                                        <div class="card-body pt-1">
+                                            <h6 class="card-title"> <small>{{ negociacion  }} Negociación</small> </h6> 
+                                            <span class="text-warning h6">{{  ((negociacion *100)/total).toFixed(2) }}%</span>
                                             <b-progress animated variant="warning" :value="(negociacion*100)/total"></b-progress>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="card mb-4">
-                                        <div class="card-body">
-                                            <h6 class="card-title">{{ desierta  }} Desierta</h6>
-                                            <div class="text-right">
-                                                <h2 class="font-weight-light mb-0">
-                                                    <i class="ti-arrow-down text-danger"></i> 
-                                                </h2>
-                                            </div>
-                                            <span class="text-dark">{{  ((desierta *100)/total).toFixed(2) }}%</span>
+                                        <div class="card-body pt-1">
+                                            <h6 class="card-title"> <small>{{ desierta  }} Desierta</small> </h6> 
+                                            <span class="text-dark h6">{{  ((desierta *100)/total).toFixed(2) }}%</span>
                                             <b-progress animated variant="dark" :value="(desierta*100)/total"></b-progress>
                                         </div>
                                     </div>
@@ -418,7 +389,7 @@ export default {
         },
         'currentPage' : async function()
         {  
-            await this.search()
+            await this.search({'page': true })
         },
     },
     async mounted()
@@ -607,9 +578,11 @@ export default {
             return data
 
         },
-        async search()
+        async search(item)
         { 
+
             const payload = {}
+            if(!item?.page)  this.currentPage = 1
             payload.loading = this.$loading
             payload.toast = this.$toast
             payload.tipo = 'filtros'
@@ -625,8 +598,11 @@ export default {
                 payload.quotation_number =String(this.filters['quotation_number'])  
             
             payload.todas = "no"     
-            
-            console.log('pay:: ', payload)
+
+            console.log('payload.offset>>', payload.offset)
+
+           
+             
             //payload.cliente = this.filters['cliente']
 
             await this.searchFilter(payload)

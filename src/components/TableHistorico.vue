@@ -132,12 +132,24 @@ export default {
     }, 
     async mounted()
     { 
+
+
+        await this.getCotizaciones(
+        {
+            loading     : this.$loading,
+            toast       : this.$toast,  
+            company_id  : this.cotiza.company_id,
+            project_id  : this.project_id,
+        })
+
+        console.log('cotiza::', this.cotiza)
     },
     methods: {
         ...mapActions('cotizaciones', [
             'searchFilter', 
             'download', 
-            'setCotizacion'
+            'setCotizacion',
+            'getCotizaciones'
         ]),
         
 

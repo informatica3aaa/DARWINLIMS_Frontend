@@ -63,10 +63,21 @@
 <script>
 
 import {mapActions} from 'vuex'
+
+import store from './../store/index'
+import router from './../router' 
+
 export default {
   name: 'LoginView',
-  mounted()
+  async mounted()
   {
+
+    if(await store.getters['usuario/isAuth'])
+    {
+      return router.push({path: '/home'})   
+    }
+    await store.dispatch('usuario/clearSession')
+    await store.dispatch('cotizaciones/clearAll')
   
       
   },

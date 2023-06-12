@@ -485,6 +485,12 @@ export default {
 
        console.log(this.monedas.find(mo=> mo.id == this.cotiza.currency_id ).text, this.monedas)
 
+
+ 
+      this.form.cliente.value = this.cotiza.company_id
+      this.form.cliente.text = this.cotiza.company_name
+       console.log('this.form.cliente::', this.form.cliente )
+
        this.loading.hide()
 
 
