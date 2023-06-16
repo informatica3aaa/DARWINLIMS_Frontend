@@ -83,6 +83,7 @@ const mutations = {
     SET_SERVICIOS_AGREGADOS(state, payload)
     {
         state.servicios_agregados = payload
+        console.log('state.servicios_agregados:: ', state.servicios_agregados)
     },
     SET_ONE_SERVICIOS_AGREGADOS(state, payload)
     {
@@ -601,9 +602,9 @@ const actions = {
 
             console.log('data cotizacion:: ', data.data)
             loading.hide()  
-            await commit('SET_COTIZACION', data?.data[0])
             await commit('SET_SERVICIOS_AGREGADOS', [])
-            await commit('CLEAR_SERVICIOS_ELEGIDOS') 
+            await commit('SET_COTIZACION', data?.data[0])
+            
 
         } catch (error) {
             payload.toast.error("Error al sete4ar cotizacion")
@@ -628,7 +629,7 @@ const actions = {
             console.log('NUEVA COTIZACION::::', data)
             await commit('SET_COTIZACION', data.data[0])
             await commit('SET_SERVICIOS_AGREGADOS', []) 
-            //await commit('CLEAR_SERVICIOS_ELEGIDOS')
+            await commit('CLEAR_SERVICIOS_ELEGIDOS')
 
             const asociados = data.data[0]?.analisis_asociado || [] 
 
