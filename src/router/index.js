@@ -18,6 +18,10 @@ import CotizacionVerView from '../views/cotizaciones/Ver'
 import CotizacionView from '../views/cotizaciones/View'
 import auth from './../middleware/auth.js'
 import logout from './../middleware/logout.js'
+import requisicionTable from './../components/requisicion/Table'
+import RequisicionesView from './../views/requisiciones/index'
+
+
 
 Vue.use(VueRouter)
 
@@ -136,12 +140,24 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
+    path :'/requisitions',
+    component: RequisicionesView,
+    children:[
+      {
+        path: '/requisitions/listar',
+        name: 'listar',
+        component: requisicionTable,
+        beforeEnter: auth,
+
+      }]
+  },
+  {
     path: '*/*',
     name: 'construccion',
     component: ConstruccionView
   },
-  { path: '/docs'  } 
-    
+  { path: '/docs'  } ,
+
   
 ]
 

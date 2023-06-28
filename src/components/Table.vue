@@ -564,7 +564,7 @@ export default {
         },
         async descargarDOC(item)
         {
-// console.log("ITEMA:::::.", item)
+
             const payload = {}
             payload.loading = this.$loading
             payload.toast = this.$toast
@@ -600,10 +600,6 @@ export default {
             payload.todas = "no"     
 
             console.log('payload.offset>>', payload.offset)
-
-           
-             
-            //payload.cliente = this.filters['cliente']
 
             await this.searchFilter(payload)
         },
