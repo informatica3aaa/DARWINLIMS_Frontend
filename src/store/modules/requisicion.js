@@ -1,11 +1,21 @@
 
 import axios from 'axios'
 const state = {
-   requisiciones : []
+   requisiciones : [],
+   totalRows : 0
 }
 
 const mutations = {  
-    SET_REQUISICIONES(state, payload){  state.requisiciones = payload },
+    SET_REQUISICIONES(state, payload)
+    {  
+        console.log('payload:: ', payload)
+        state.requisiciones = payload 
+    },
+    SET_REQUISICIONES_TOTAL(state, payload)
+    {  
+        console.log('payload:: ', payload)
+        state.totalRows = payload 
+    },
 
 }
 
@@ -15,10 +25,7 @@ const actions = {
     {
         let loading = payload.loading.show()
 
-        try {
-
-            
-            if(!payload.offset) throw { message: 'falta el campo : offset'} 
+        try { 
             if(!payload.limit) throw { message: 'falta el campo : limit'} 
 
             const { data } =  await axios.post('/api/requisition/list', payload)
@@ -26,6 +33,7 @@ const actions = {
             if(!data.ok) throw { message: 'No se logro consultar por las requisiciones'} 
 
             await commit('SET_REQUISICIONES', data.data)
+            await commit('SET_REQUISICIONES_TOTAL', data.cantidad)
 
             loading.hide()
         } catch (error) {
