@@ -1,105 +1,49 @@
 <template>
   <div>
     <b-row>
-      <b-col sm="12">
-                <b-row> 
-                </b-row>
-      </b-col>
-    </b-row>
-    <b-row>
       <b-table
                 striped="striped"
                 :items="cotizaciones"
                 :fields="fields"
-                :per-page="porPagina"
-                :filter="filter"
-                :filter-included-fields="filterOn"
                 stacked="md"
-                :busy="isBusy"
                 show-empty
                 small
                 :outlined="true"
                 :bordered="true">
             <template slot="top-row" slot-scope="{ fields }">
-                <td v-for="field in fields" :key="field.key">   
-                    <b-input-group v-if="field.is_select == 'quotation_state' && field.fil">
+                <td v-for="field in fields" :key="field.key">
+                    <b-input-group v-if="field.is_select == 'name' && field.fil">
                         <model-select 
                             size="sm"  
-                            :options="internos"
-                            v-model="filters[field.key]"
-                            placeholder="interno_plazo">
+                            :options="name">
                         </model-select>  
-                    </b-input-group>
-                    <b-input-group v-if="field.is_select == 'quotation_number' && field.fil">
-                        <b-form-input  
-                            @keyup.enter="search()"  
-                            size="sm" 
-                            :disabled="field.active" 
-                            v-model="filters[field.key]">
-                        </b-form-input>
-                        <b-input-group-append> 
-                        <b-button 
-                            size="sm" 
-                            v-if="!field.active" 
-                            @click="search()" 
-                            variant="pdarwin">
-                            <b-icon icon="search"></b-icon>
-                        </b-button>
-                        <b-button 
-                            size="sm" 
-                            v-if="field.active"
-                             @click="search()" 
-                             variant="danger">
-                            <b-icon icon="x"></b-icon>
-                        </b-button>
-                        </b-input-group-append>
                     </b-input-group>
                     <b-input-group v-if="field.is_select == 'company_name' && field.fil">
-                        <b-form-input  
-                            @keyup.enter="search()"  
-                            size="sm" 
-                            :disabled="field.active" 
-                            v-model="filters[field.key]">
-                        </b-form-input>
-                        <b-input-group-append> 
-                        <b-button 
-                            size="sm" 
-                            v-if="!field.active" 
-                            @click="search()" 
-                            variant="pdarwin">
-                            <b-icon icon="search"></b-icon>
-                        </b-button>
-                        <b-button 
-                            size="sm" 
-                            v-if="field.active"
-                             @click="search()" 
-                             variant="danger">
-                            <b-icon icon="x"></b-icon>
-                        </b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-                    <b-input-group v-if="field.is_select == 'state_id' && field.fil">
                         <model-select 
                             size="sm"  
-                            :options="estados"
-                            v-model="filters[field.key]"
-                            placeholder="Estado">
+                            :options="company_name">
+                            </model-select>  
+                    </b-input-group>
+                    <b-input-group v-if="field.is_select == 'sample_quantity' && field.fil">
+                        <model-select 
+                            size="sm"  
+                            :options="sample_quantity"
+                            placeholder="sample_quantity">
                         </model-select>  
                     </b-input-group>
-                    <b-input-group v-if="field.is_select == 'active' && field.fil">
+                    <b-input-group v-if="field.is_select == 'Observations' && field.fil">
                         <model-select 
                             size="sm"  
-                            :options="vigencias"
-                            v-model="filters[field.key]"
-                            placeholder="Vigencia">
+                            :options="Observations"
+                            placeholder="Observations">
                         </model-select>  
                     </b-input-group>
-                    <b-input-group v-if="field.is_select == 'expiration_date' && field.fil">
+                    <b-input-group v-if="field.is_select == 'requisition_stage_id' && field.fil">
                         <model-select 
                             size="sm"  
-                            :options="activas"
+                            :options="requisition_stage_id"
                             v-model="filters[field.key]"
-                            placeholder="Activa">
+                            placeholder="requisition_stage_id">
                         </model-select>  
                     </b-input-group>
                    
@@ -146,18 +90,24 @@ export default {
   },
   data: function() {
     return {
+      requisition_stages:[
+              { value: 1, text: 'Esperando Ingreso'},
+              { value: 2, text: 'Esperando Aprobación'},
+              { value: 3, text: 'Preparación Mecánica'},
+              { value: 4, text: 'Análisis'},
+              { value: 5, text: 'Análisis'},
+              { value: 6, text: 'Inserto'},
+              { value: 7, text: 'Análisis'},
+              { value: 8, text: 'Resultados'},
+              { value: 9, text: 'Cobrado'},
+          ],
       fields: [
-            {  is_select: 'quotation_state_id', active: false, fil: true, key: 'quotation_state', label: 'Plazo Interno', class: 'text-center' },
-            {  is_select: 'quotation_state', active: false, fil: true, key: 'quotation_state', label: 'Correo Notificación', class: 'text-center' },
-            {  is_select: 'quotation_number', active: false, fil: true, key: 'quotation_number', label: 'Cotizacion', class: 'text-center'},
-            {  is_select: 'company_name', active: false, fil: true, key: 'company_name', label: 'Cliente', class: 'text-center'},
-            {  is_select: 'estado_notificacion', active: false, fil: true, key: 'estado_notificacion', label: 'Est Noti.', class: 'text-center'},
-            {  is_select: false, active: false, fil: true, key: 'project', label: 'Proyecto' , class: 'text-center'},
-            {  is_select: false, active: false, fil: false, key: 'start_date', label: 'Inicio' , class: 'text-center'},
-            {  is_select: 'expiration_date', active: false, fil: true,  key: 'expiration_date', label:'Expiracion', class: 'text-center'},
-            {  is_select: 'active', active: false, fil: true, key: 'active',  label:'Vigencia', class: 'text-center'},
-            {  is_select: 'state_id', active: false, fil: true, key: 'state_id',  label:'Estado', class: 'text-center'},
-            {  is_select: false, active: false, fil: false, key: 'acciones',  label:'Acciones', class: 'text-center'}
+            {  is_select: 'name', active: false, fil: true, key: 'name', label: 'Documento', class: 'text-center' },
+            {  is_select: 'company_name', active: false, fil: true, key: 'company_name', label: 'Cliente', class: 'text-center' },
+            {  is_select: 'sample_quantity', active: false, fil: true, key: 'sample_quantity', label: 'Muestras', class: 'text-center'},
+            {  is_select: 'Observations', active: false, fil: true, key: 'Observations', label: 'Observaciones', class: 'text-center'},
+            {  is_select: 'created', active: false, fil: true, key: 'Created', label: 'Fecha', class: 'text-center'},
+            {  is_select: 'requisition_stage_id', active: false, fil: true, key: 'requisition_stage_id', label: 'Ingreso', class: 'text-center'},
         ]
     }
   },
