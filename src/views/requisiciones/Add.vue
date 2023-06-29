@@ -143,6 +143,8 @@
 <script> 
 import { BasicSelect } from 'vue-search-select'
 import { mapActions, mapGetters,  mapState } from 'vuex'
+import route from '../../router'
+
 
 export default {
   name: 'RequisitionSearch_add',
@@ -169,7 +171,7 @@ export default {
       console.log('email_requisicion::', this.email_requisicion)
     }
   },
-  methods:{ ...mapActions('clientes', ['getClienteEmail']),  ...mapActions('cotizaciones', [ 'getCotizacionesById']),
+  methods:{...mapActions('requisicion', ['grabar'] ), ...mapActions('clientes', ['getClienteEmail']),  ...mapActions('cotizaciones', [ 'getCotizacionesById']),
     async changeCorreo(item)
     {
       this.form.correo_cliente.value = item.value
@@ -181,8 +183,22 @@ export default {
       this.form.cotizacion.text = item.text
     },
     async siguiente()
-    {
-      console.log('iR A BUSCAR') 
+    { 
+      const payload = {}
+      payload.loading = this.$loading
+      payload.toast = this.$toast  
+      payload.quotation_id = this.form.cotizacion.value
+      payload.company_id = this.cotiza.id
+      payload.name = this.form.nombre_documento.value
+      payload.destinatario = this.form.persona_destinataria.value
+      payload.observations = this.form.observaciones.value
+      payload.has_insert = this.form.posee_inserto.value ? true : false
+
+      console.log('payload:: ', payload)
+      const ok = await this.grabar(payload)
+      if(!ok ) return;
+
+      await route.push({name: 'requisiciones', params:{ id: this.form.cliente.value }})
     }
   }
   ,data()
