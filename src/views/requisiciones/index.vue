@@ -8,12 +8,18 @@
   
             <h2>
              <b-icon icon="truck"></b-icon> INGRESO DE MUESTRAS
-            </h2>
-            <h3> Lista de Requisiciones</h3>    
+            </h2>  
           </b-col>
           <b-col sm="6">
               
             <b-list-group horizontal>
+              <b-list-group-item 
+                  @click="seccion='Nueva Requisicion'" 
+                  active-class="active" 
+                  class="text-small text-center" 
+                  :to="{name: 'search_client_quotation'}" >
+                    <small>Nueva Requisicion</small>
+                </b-list-group-item>
                 <b-list-group-item 
                   @click="seccion ='Lista de Cotizaciones'" 
                   active-class="active"
@@ -21,13 +27,7 @@
                   :to="{name: 'cotizaciones'}">
                     <small>Lista de Cotizaciones</small>
                 </b-list-group-item>
-                <b-list-group-item 
-                  @click="seccion='Nueva Cotización'" 
-                  active-class="active" 
-                  class="text-small text-center" 
-                  :to="{name: 'cotizaciones_new'}" >
-                    <small>Nueva Cotización</small>
-                </b-list-group-item>
+                
   
                 <b-list-group-item 
                 active-class="active" 

@@ -7,6 +7,7 @@ const state = {
     cotizaciones: [],
     condiciones: [],
     cotizaciones_historicas: [],
+    cotizaciones_requicision: [],
     servicios: [],
     servicios_agregados: [],
     servicios_elegidos: [],
@@ -41,6 +42,7 @@ const mutations = {
     },
     SET_COTIZACION(state, payload)
     {
+        console.log('dejo cotiza:: ', payload)
         state.cotiza = payload
     },
     SET_TIPOS_ENSAYO(state, payload)
@@ -119,6 +121,10 @@ const mutations = {
     {
         state.estado_cotizaciones = payload.data
     },
+    SET_COTIZACIONES_REQUICISION(state, payload)
+    {
+        state.cotizaciones_requicision = payload
+    },
     CLEAR_ALL(state)
     {
         state.cotizaciones=[]
@@ -137,10 +143,35 @@ const mutations = {
         state.estado_cotizaciones=[]
     }
 
+
 }
 
 const actions = {
 
+    async getCotizacionesById({commit}, payload) 
+    {   
+        let loading = payload.loading.show()
+
+        try {
+
+            const { data } =  await axios.post('/api/quotations/company', payload)
+
+            if(!data.ok) throw { message: 'No se logro consultar por los cliente'}
+
+            console.log('data:: ', data)
+
+            await commit('SET_COTIZACION', data.company)
+            await commit('SET_COTIZACIONES_REQUICISION', data.data)
+
+
+            loading.hide()
+        } catch (error) {
+            payload.toast.error("Error No se logro consultar por los cliente")
+            loading.hide()
+            console.error('Error No se logro consultar por los cliente: ', error) 
+        }
+    
+    },
     async clearAll({commit} )
     {
         await commit('CLEAR_ALL')
@@ -782,6 +813,13 @@ const actions = {
 }
 
 const getters= { 
+
+    cotizacionesFormatRequisition: state => {
+
+        if(!state.cotizaciones_requicision) return []
+
+        return state.cotizaciones_requicision.map(item => ({ value: item.id, text: `Proyecto: ${ item.name || '' } - Cotizacion: ${ item.quotation_number }` }))
+    },
     condicionesFormat: state => {
 
         if(!state.condiciones) return []

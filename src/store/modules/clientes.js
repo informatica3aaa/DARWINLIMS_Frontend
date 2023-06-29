@@ -3,6 +3,8 @@ import axios from 'axios'
 const state = {
     clientes: [], 
     cliente: null, 
+    clientes_cotizaciones: [], 
+    email_requisicion: [], 
     proyectos: []
 }
 
@@ -16,6 +18,8 @@ const mutations = {
     {
         state.clientes = payload
     },
+    SET_CLIENTES_COTIZACIONES(state, payload){  state.clientes_cotizaciones = payload },
+    SET_CLIENTES_EMAIL_REQUISICION(state, payload){  state.email_requisicion = payload },
     SET_PROYECTOS(state, payload)
     {
         console.log('COLO PROYECTOS', payload)
@@ -24,8 +28,49 @@ const mutations = {
 
 }
 
-const actions = {
+const actions = {  
 
+    async getClienteEmail({commit}, payload)
+    {
+        let loading = payload.loading.show()
+
+        try {
+
+            const { data } =  await axios.post('/api/requisition/mail', payload)
+
+            if(!data.ok) throw { message: 'No se logro consultar por los correos de la requisicion'} 
+
+            await commit('SET_CLIENTES_EMAIL_REQUISICION', data.data)
+
+            loading.hide()
+        } catch (error) {
+            payload.toast.error("Error No se logro consultar por los correos de la requisicion")
+            loading.hide()
+            console.error('Error No se logro consultar por los correos de la requisicion: ', error) 
+        } 
+    },
+    async getClientesCotizaciones({commit}, payload) 
+    {   
+        let loading = payload.loading.show()
+
+        try {
+
+            const { data } =  await axios.post('/api/quotations/aceptadas')
+
+            if(!data.ok) throw { message: 'No se logro consultar por los clientes con cotizaciones'}
+
+            
+
+            await commit('SET_CLIENTES_COTIZACIONES', data.data)
+
+            loading.hide()
+        } catch (error) {
+            payload.toast.error("Error No se logro consultar por los clientes con cotizaciones")
+            loading.hide()
+            console.error('Error No se logro consultar por los clientes con cotizaciones: ', error) 
+        }
+    
+    },
     async getClientes({commit}, payload) 
     {   
         let loading = payload.loading.show()
@@ -102,6 +147,18 @@ const actions = {
 }
 
 const getters= { 
+    email_requisicion: state => {
+
+        if(!state.email_requisicion) return []
+
+        return state.email_requisicion.map(item => ({ value: item.id, text: `${ item.mail } ` }))
+    },
+    clientesFormatRequisition: state => {
+
+        if(!state.clientes_cotizaciones) return []
+
+        return state.clientes_cotizaciones.map(item => ({ value: item.id, text: `${ item.name } - Rut: ${ item.rut }` }))
+    },
     clientesFormat: state => {
 
         if(!state.clientes) return []
