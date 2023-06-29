@@ -146,8 +146,8 @@ const routes = [
     component: RequisicionesView,
     children:[
       {
-        path: '/requisitions/listar',
-        name: 'listar',
+        path: '/requisitions',
+        name: 'requisiciones',
         component: requisicionTable,
         beforeEnter: auth,
 

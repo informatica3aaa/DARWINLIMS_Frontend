@@ -21,11 +21,11 @@
                     <small>Nueva Requisicion</small>
                 </b-list-group-item>
                 <b-list-group-item 
-                  @click="seccion ='Lista de Cotizaciones'" 
+                  @click="seccion ='Lista de Requisiciones'" 
                   active-class="active"
                   class="text-small text-center" 
-                  :to="{name: 'cotizaciones'}">
-                    <small>Lista de Cotizaciones</small>
+                  :to="{name: 'requisiciones'}">
+                    <small>Lista requisiciones</small>
                 </b-list-group-item>
                 
   

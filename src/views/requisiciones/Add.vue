@@ -100,6 +100,28 @@
             </b-form-group>
             </b-col>
         </b-row>
+        <!-- ¿Posee Inserto? -->
+
+        <b-row>
+          <b-col> 
+            <b-form-checkbox 
+              label-size="sm"
+              v-model="form.posee_inserto.value" 
+              value="true"
+              unchecked-value="false"
+            >
+            ¿Posee Inserto?
+          </b-form-checkbox>
+          <b-form-checkbox 
+            label-size="sm"
+            v-model="form.sin_muestra.value" 
+            value="true"
+            unchecked-value="false"
+          >
+          Sin muestras 
+         </b-form-checkbox>
+          </b-col>
+        </b-row> 
 
         <b-row class="mb-4 mt-4">
             <b-col>
@@ -177,7 +199,8 @@ export default {
         correo_cliente: { text: null, value: null, isError: false, error: null, class: "select-default" }, 
         correo_otro: { text: null, value: null, isError: false, error: null, class: "select-default" }, 
         observaciones: { text: null, value: null, isError: false, error: null, class: "select-default" }, 
-        muestra: { text: null, value: null, isError: false, error: null, class: "select-default" }, 
+        sin_muestra: { text: null, value: null, isError: false, error: null, class: "select-default" }, 
+        posee_inserto: { text: null, value: null, isError: false, error: null, class: "select-default" }, 
       }
      
     }
