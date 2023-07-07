@@ -19,9 +19,10 @@ import CotizacionView from '../views/cotizaciones/View'
 import auth from './../middleware/auth.js'
 import logout from './../middleware/logout.js'
 import requisicionTable from './../components/requisicion/Table'
-import RequisicionesView from './../views/requisiciones/index'
+import RequisicionesView from './../views/requisiciones/Index'
 import RequisitionSearch_client_quotation from './../views/requisiciones/Nueva'
 import RequisitionSearch_add from './../views/requisiciones/Add'
+import RequisitionNuevoIngreso from './../views/requisiciones/Nuevo_ingreso'
 
 
 
@@ -162,6 +163,12 @@ const routes = [
         path: '/requisitions/add/:id',
         name: 'search_client_add',
         component: RequisitionSearch_add,
+        beforeEnter: auth 
+      },
+      {
+        path: '/requisitions/entry_requisition',
+        name: 'requisitions_nuevo_ingreso',
+        component: RequisitionNuevoIngreso,
         beforeEnter: auth 
       } 
     ]

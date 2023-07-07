@@ -675,7 +675,7 @@ export default {
       payload.loading = this.$loading
       payload.toast = this.$toast 
       payload.expiration_date = this.form.hasta.value
-      payload.company_id = this.cotiza.company_id
+      payload.company_id = this.form.cliente.value
       payload.estimated_days = this.form.tiempo.value
       payload.proyect_id = this.form.proyecto.value
       payload.destinatario = this.form.destinatario.text

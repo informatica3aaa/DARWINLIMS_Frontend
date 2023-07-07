@@ -67,6 +67,11 @@
         <b-row>
           <b-check v-model="modo_clasico">Modo clasico</b-check>
         </b-row>
+        <b-row>
+          <b-col cols="3">
+            <b-button @click="clear_filters()" variant="primary" size="sm">Restablecer filtros</b-button>
+          </b-col>
+        </b-row>
         <div v-if="modo_clasico"> 
           <vue-bootstrap-typeahead  
             :serializer="re => re.name" 
@@ -94,6 +99,7 @@
               label="Tipo de elemento"
               label-for="input-1">
             <basic-select
+                  :isDisabled="block_filtros_otro"
                   :selectedOption="form.tipo_elemento"
                   @select="changeElemento"
                   size="sm"  
@@ -110,6 +116,7 @@
               label="Tipo de unidad"
               label-for="input-1">
               <basic-select
+                  :isDisabled="block_filtros_otro || block_filtros_p_mecanica" 
                   :selectedOption="form.tipo_unidad"
                   @select="changeUnidad"
                   size="sm"  
@@ -147,6 +154,7 @@
               label="Tipo de muestra"
               label-for="input-1">
               <basic-select
+                  :isDisabled="block_filtros_otro"
                   :selectedOption="form.tipo_muestra"
                   @select="changeMuestra"
                   size="sm"  
@@ -166,6 +174,7 @@
               label="Tipo de digestion"
               label-for="input-1">
               <basic-select
+                  :isDisabled="block_filtros_otro || block_filtros_p_mecanica"
                   :selectedOption="form.tipo_digestion"
                   @select="changeDigestion"
                   size="sm"  
@@ -181,6 +190,7 @@
               label="Tipo de tecnica"
               label-for="input-1">
               <basic-select
+                  :isDisabled="block_filtros_otro || block_filtros_p_mecanica"
                   :selectedOption="form.tipo_tecnica"
                   @select="changeTecnica"
                   size="sm"  
@@ -552,31 +562,42 @@ export default {
         quotation_id: this.cotiza.id
 
     }) 
+    },
+    async clear_filters()
+    {
+
+      this.form.tipo_elemento.value = ''
+      this.form.tipo_elemento.text = ''
+      this.form.tipo_unidad.value = ''
+      this.form.tipo_unidad.text = ''
+      this.form.tipo_ensayo.value = ''
+      this.form.tipo_ensayo.text = ''
+      this.form.tipo_muestra.value = ''
+      this.form.tipo_muestra.text = ''
+      this.form.tipo_digestion.value = ''
+      this.form.tipo_digestion.text = ''
+      this.form.tipo_tecnica.value = ''
+      this.form.tipo_tecnica.text = ''
+
     }, 
     async eliminarServicio(item)
     { 
-        await this.deleteServiceAgregado(
-        {
-            loading: this.$loading,
-            toast : this.$toast,
-            item 
-           
-        }) 
-
+      await this.deleteServiceAgregado(
+      {
+          loading: this.$loading,
+          toast : this.$toast,
+          item 
+      }) 
     },  
     async eliminarServicioDefinitivo(item)
     {
-      
-      
-      console.log('devolver servicio', item)
-        await this.devolverServiceAgregado(
-        {
-            loading: this.$loading,
-            toast : this.$toast,
-            item,
-            quotation_id : item.quotation_id 
-           
-        }) 
+      await this.devolverServiceAgregado(
+      {
+          loading: this.$loading,
+          toast : this.$toast,
+          item,
+          quotation_id : item.quotation_id 
+      }) 
 
     },  
     async finish()
@@ -604,13 +625,15 @@ export default {
     {
       this.form.cotizacion_all.value = item.value 
       this.form.cotizacion_all.text = item.text 
-
     },
     async changeEnsayo(item)
-    {
+    { 
+      this.block_filtros_otro = false
+      this.block_filtros_p_mecanica = false
+      if(item.value == 4) this.block_filtros_otro = true
+      if(item.value == 2) this.block_filtros_p_mecanica = true
       this.form.tipo_ensayo.value = item.value 
       this.form.tipo_ensayo.text = item.text 
-
       await this.changeServicios()
 
     },
@@ -619,31 +642,26 @@ export default {
       this.form.tipo_muestra.value = item.value 
       this.form.tipo_muestra.text = item.text
       await this.changeServicios()
-
     },
     async changeDigestion(item)
     {
       this.form.tipo_digestion.value = item.value 
       this.form.tipo_digestion.text = item.text
       await this.changeServicios()
-
     },
     async changeTecnica(item)
     {
       this.form.tipo_tecnica.value = item.value 
       this.form.tipo_tecnica.text = item.text
       await this.changeServicios()
-
     },
     async changeServicio(item)
     {
       this.form.servicio.value = item.value 
       this.form.servicio.text = item.text  
-      console.log('this.form.servicio.value:: ', this.form.servicio.value, item)
     },
     async changeUnidad(item)
     {
-      // console.log("ITEM UN::::",item);
       this.form.tipo_unidad.value = item.value 
       this.form.tipo_unidad.text = item.text 
       await this.changeServicios()
@@ -707,7 +725,8 @@ export default {
   ,data()
   {
     return { 
-
+      block_filtros_otro: false,
+      block_filtros_p_mecanica: false,
       modo_clasico: null,
       resultados:[],
       filters: {

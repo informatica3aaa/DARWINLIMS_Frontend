@@ -32,9 +32,9 @@
                 <b-list-group-item 
                 active-class="active" 
                 class="text-small text-center"  
-                :to="{ name: 'cotizaciones_pendientes'}"
-                @click="seccion='Aprobar Cotización'"
-                ><small>Aprobar Cotización</small>
+                :to="{ name: 'requisitions_nuevo_ingreso'}"
+                @click="seccion='Nuevo Ingreso'"
+                ><small>Nuevo Ingreso</small>
                 
                 </b-list-group-item>
                 <b-list-group-item 
@@ -87,6 +87,12 @@
     name: 'RequisicionesView',
     computed:{
       ...mapState('usuario', ['isAuth', 'menu', 'user'])
+    }
+    ,mounted()
+    {
+      
+      this.seccion = ''
+      console.log('LOG:: ', this.seccion)
     }
     ,data(){
       return {
