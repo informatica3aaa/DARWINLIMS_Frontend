@@ -230,6 +230,7 @@
         <b-row class="mt-3"> 
             <b-col sm="12">
                 <h3>Servicios seleccionados en estado temporal</h3>
+                <b-button size="sm">Seleccionar todos</b-button>
                 <b-table
                     class="mt-1"
                     striped="striped"
@@ -244,8 +245,8 @@
                     small
                     :outlined="true"
                     :bordered="true"
-                    > 
-     
+                    :selectable="true"
+                    >  
          
                 <template #cell(cost)="row">   
                   <b-input size="sm" v-model="row.item.cost"  ></b-input>
@@ -759,7 +760,7 @@ export default {
             {  is_select: 'Digestión', active: false, fil: true, key: 'digestion', label: 'Digestión', class: 'text-center'},
             // {  is_select: 'Unidad', active: false, fil: true, key: 'digestion_name', label: 'Digestión', class: 'text-center'},
             // {  is_select: 'Elemento', active: false, fil: true, key: 'digestion_name', label: 'Digestión', class: 'text-center'},
-            {  is_select: 'price', active: false, fil: true, key: 'price', label: 'Valor', class: 'text-center'},
+            {  is_select: 'price', active: false, fil: true, key: 'valor_final', label: 'Valor', class: 'text-center'},
             {  is_select: 'Acciones', active: false, fil: true, key: 'Acciones', label: 'Acciones', class: 'text-center'}
       ],
       form: { 
