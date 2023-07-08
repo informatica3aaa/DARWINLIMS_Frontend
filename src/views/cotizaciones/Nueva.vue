@@ -93,7 +93,49 @@
         <b-row> 
           <b-col>
 
-             <b-form-group 
+            
+            <b-form-group 
+              label-size="sm"
+              description="tipo de ensayo"
+              label="Tipo de ensayo"
+              label-for="input-1">
+            <basic-select
+                  :selectedOption="form.tipo_ensayo"
+                  @select="changeEnsayo"
+                  size="sm"  
+                  :options="ensayosFormat"
+                  placeholder="tipos de ensayo">
+              </basic-select> 
+             </b-form-group>
+
+             
+
+          </b-col>
+          <b-col>
+
+            <b-form-group 
+              label-size="sm"
+              description="tipo de muestra"
+              label="Tipo de muestra"
+              label-for="input-1">
+              <basic-select
+                  :isDisabled="block_filtros_otro"
+                  :selectedOption="form.tipo_muestra"
+                  @select="changeMuestra"
+                  size="sm"  
+                  :options="muestrasFormat"
+                  placeholder="tipos de muestras">
+              </basic-select> 
+             </b-form-group>
+              
+             
+
+          </b-col>
+        </b-row>
+
+        <b-row> 
+          <b-col>
+            <b-form-group 
               label-size="sm"
               description="Elemento quimico"
               label="Tipo de elemento"
@@ -108,9 +150,11 @@
               </basic-select> 
              </b-form-group>
 
+
           </b-col>
           <b-col>
-              <b-form-group 
+              
+            <b-form-group 
               label-size="sm"
               description="Unidad"
               label="Tipo de unidad"
@@ -124,45 +168,6 @@
                   placeholder="seleccione unidad">
               </basic-select> 
              </b-form-group>
-             
-
-          </b-col>
-        </b-row>
-
-        <b-row> 
-          <b-col>
-
-             <b-form-group 
-              label-size="sm"
-              description="tipo de ensayo"
-              label="Tipo de ensayo"
-              label-for="input-1">
-            <basic-select
-                  :selectedOption="form.tipo_ensayo"
-                  @select="changeEnsayo"
-                  size="sm"  
-                  :options="ensayosFormat"
-                  placeholder="tipos de ensayo">
-              </basic-select> 
-             </b-form-group>
-
-          </b-col>
-          <b-col>
-              <b-form-group 
-              label-size="sm"
-              description="tipo de muestra"
-              label="Tipo de muestra"
-              label-for="input-1">
-              <basic-select
-                  :isDisabled="block_filtros_otro"
-                  :selectedOption="form.tipo_muestra"
-                  @select="changeMuestra"
-                  size="sm"  
-                  :options="muestrasFormat"
-                  placeholder="tipos de muestras">
-              </basic-select> 
-             </b-form-group>
-             
 
           </b-col>
         </b-row>
