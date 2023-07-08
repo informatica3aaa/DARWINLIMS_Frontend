@@ -445,14 +445,7 @@ export default {
     this.form.desde.value = moment().format('YYYY-MM-DD').toString()
 
 
-  },
-
-  watch:{
-    'form': function(val1, val2){
-      console.log('valores:: ', val1, val2)
-    }
-  },
-
+  }, 
   methods:{
     ...mapActions('monedas', ['getAllMonedas']),
     ...mapActions('clientes', ['getClientes', 'validaCliente']), 

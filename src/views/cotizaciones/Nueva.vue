@@ -127,9 +127,6 @@
                   placeholder="tipos de muestras">
               </basic-select> 
              </b-form-group>
-              
-             
-
           </b-col>
         </b-row>
 
@@ -418,7 +415,7 @@ import axios from 'axios'
 export default {
   name: 'CotizacionesNewDosView',
   computed:{
-    ...mapState('cotizaciones', ['cotiza', 'servicios', 'servicios_agregados', 'servicios_elegidos', 'stringMoneda']),
+    ...mapState('cotizaciones', ['cotiza', 'servicios', 'servicios_agregados', 'servicios_elegidos', 'moneda']),
     ...mapGetters('cotizaciones', [ 'ensayosFormat', 'muestrasFormat', 'digestionesFormat', 'tecnicasFormat', 'serviciosFormat', 'allCotizacionesFormat', 'elementosFormat','unidadesFormat']), 
     ...mapState('clientes', ['cliente'])
   },
@@ -482,7 +479,12 @@ export default {
           limit :20
        })  
 
-
+       this.fields = [
+            {  is_select: 'cost', active: false, fil: true, key: 'cost', label: `Valor ${ this.moneda }` , class: 'text-center' },
+            {  is_select: 'Acciones', active: false, fil: true, key: 'Acciones', label: 'Acciones', class: 'text-center'},
+            {  is_select: 'name', active: false, fil: true, key: 'name', label: 'Nombre', class: 'text-left'},
+            {  is_select: 'description', active: false, fil: true, key: 'fases', label: 'Detalle' , class: 'text-left'}
+       ] 
       
 
 
@@ -746,12 +748,9 @@ export default {
       filter: null,
       filterOn: [],
       fields: [
-            {  is_select: 'cost', active: false, fil: true, key: 'cost', label: 'Valor USD$' , class: 'text-center' },
-            {  is_select: 'Acciones', active: false, fil: true, key: 'Acciones', label: 'Acciones', class: 'text-center'},
-            {  is_select: 'name', active: false, fil: true, key: 'name', label: 'Nombre', class: 'text-left'},
-            {  is_select: 'description', active: false, fil: true, key: 'fases', label: 'Detalle' , class: 'text-left'}
+            
           ],
-          fields_elegidos: [
+      fields_elegidos: [
             {  is_select: 'name', active: false, fil: true, key: 'assay_name', label: 'Nombre', class: 'text-center' },
             {  is_select: 'Tipo', active: false, fil: true, key: 'tipo', label: 'Tipo', class: 'text-center'},
             {  is_select: 'Método', active: false, fil: true, key: 'metodo', label: 'Método', class: 'text-center'},

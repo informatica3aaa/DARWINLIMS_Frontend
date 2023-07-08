@@ -2,6 +2,7 @@ import axios from 'axios'
 import route from '../../router'
 
 const state = {
+    moneda: null,
     cotiza: null,
     totalRows: 0,
     cotizaciones: [],
@@ -34,6 +35,10 @@ const mutations = {
     {
         state.totalRows = payload.total_registros
         state.cotizaciones = payload.data
+    },
+    SET_MONEDA(state, payload)
+    {
+        state.moneda =  payload
     },
 
     SET_CONDICIONES(state, payload)
@@ -108,11 +113,7 @@ const mutations = {
     CLEAR_SERVICIOS_ELEGIDOS(state)
     { 
         state.servicios_elegidos= []
-    },
-    SET_MONEDA(state, payload)
-    { 
-        state.stringMoneda = payload
-    },
+    }, 
     SET_ALL_COTIZACIONES(state, payload)
     { 
         state.all_cotizaciones = payload
