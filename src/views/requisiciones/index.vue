@@ -35,7 +35,6 @@
                 :to="{ name: 'requisitions_nuevo_ingreso'}"
                 @click="seccion='Nuevo Ingreso'"
                 ><small>Nuevo Ingreso</small>
-                
                 </b-list-group-item>
                 <b-list-group-item 
                 active-class="active" 
