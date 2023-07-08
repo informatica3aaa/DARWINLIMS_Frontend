@@ -226,12 +226,14 @@
           </b-col>
         </b-row>
       </div>
-        <hr>
+        <hr> 
         <b-row class="mt-3"> 
             <b-col sm="12">
                 <h3>Servicios seleccionados en estado temporal</h3>
-                <b-button size="sm">Seleccionar todos</b-button>
+                <b-button variant="primary" @click="selectAllRows()" size="sm">Seleccionar todos</b-button>
+                <b-button class="m-2" variant="primary" @click="agregarSeleccionados()" size="sm">Agregar todos los seleccionados</b-button>
                 <b-table
+                    ref="selectableTable"
                     class="mt-1"
                     striped="striped"
                     :items="servicios_agregados"
@@ -246,6 +248,7 @@
                     :outlined="true"
                     :bordered="true"
                     :selectable="true"
+                    @row-selected="onRowSelected"
                     >  
          
                 <template #cell(cost)="row">   
@@ -507,7 +510,12 @@ export default {
       'getAllCotizaciones',
       'devolverServiceAgregado'
     ]),
-
+    onRowSelected(items) {
+        this.seleccionados = items
+      },
+    async selectAllRows() {
+        this.$refs.selectableTable.selectAllRows()
+    },
     async showModal() 
     {
 
@@ -552,6 +560,38 @@ export default {
           console.error("Error al obtener direcciones:: ", error)
         } 
     },
+    async agregarSeleccionados()
+    { 
+      console.log('this.seleccionados:: ', this.seleccionados)
+        if(this.seleccionados.length == 0)
+        {
+          Swal.fire({ text: 'No Existen servicios seleccionados',  
+                        type: 'error', 
+                        confirmButtonText: 'Aceptar',
+                        showCancelButton: false
+                    })
+          return console.error('No se tiene seleccionado servicios')
+        }
+        const { value } = await Swal.fire({ text: '¿Está seguro que desea agregar todos los análisis seleccionados?',  
+                        type: 'success', 
+                        confirmButtonText: 'Aceptar',
+                        showCancelButton: false
+                    })
+
+      if(!value) return console.error('se nego')
+
+      for(let item of this.seleccionados)
+      {
+        await this.addServiceElegido(
+        {
+            loading: this.$loading,
+            toast : this.$toast,
+            item,
+            quotation_id: this.cotiza.id
+  
+        })  
+      }
+    },
     async elegirServicio(item)
     { 
         const { value } = await Swal.fire({ text: '¿Está seguro que desea agregar este análisis?',  
@@ -560,16 +600,16 @@ export default {
                         showCancelButton: false
                     })
 
-    if(!value) return console.error('no se coloco nombre')
+      if(!value) return console.error('no se coloco nombre')
 
-    await this.addServiceElegido(
-    {
-        loading: this.$loading,
-        toast : this.$toast,
-        item,
-        quotation_id: this.cotiza.id
+      await this.addServiceElegido(
+      {
+          loading: this.$loading,
+          toast : this.$toast,
+          item,
+          quotation_id: this.cotiza.id
 
-    }) 
+      }) 
     },
     async clear_filters()
     {
@@ -733,6 +773,7 @@ export default {
   ,data()
   {
     return { 
+      seleccionados: [], 
       block_filtros_otro: false,
       block_filtros_p_mecanica: false,
       modo_clasico: null,

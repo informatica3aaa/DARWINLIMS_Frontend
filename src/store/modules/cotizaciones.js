@@ -584,7 +584,7 @@ const actions = {
         try { 
 
 
-            console.log('payload.item::', payload.item)
+            console.log('payload.item::',payload.quotation_id, payload.item.assay_id, payload.item.cost)
 
             const { data } =  await axios.post('/api/quotations/new/detail', {
                 active : 0,
