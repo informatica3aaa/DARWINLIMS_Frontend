@@ -176,7 +176,7 @@
                             placeholder="Estado">
                         </model-select>  
                     </b-input-group>
-                    <b-input-group v-if="field.is_select == 'start_date'">
+                    <b-input-group v-if="field.is_select == 'start_date_old'">
                         <model-select 
                             size="sm"  
                             :options="vigencias"
@@ -184,7 +184,7 @@
                             placeholder="Vigencia">
                         </model-select>  
                     </b-input-group>
-                    <b-input-group v-if="field.is_select == 'start_date'">
+                    <b-input-group v-if="field.is_select == 'start_date_old'">
                         <model-select 
                             size="sm"  
                             :options="activas"
@@ -250,12 +250,18 @@
                  </span>
              </template>
              <template #cell(start_date)="row">   
-                <span class="text-darwin">
-                        {{ row.item.start_date }}
-                </span>
-                <span class="text-darwin">
-                        {{ row.item.expiration_date }}
-                </span>
+                <b-row>
+                    <span class="text-darwin">
+                            Inicio: {{ row.item.start_date }}
+                    </span> 
+                </b-row>
+                <b-row> 
+                    <span class="text-darwin">
+                    Fin: 
+                            {{ row.item.expiration_date }}
+                    </span>
+
+                </b-row>
                 <b-badge v-if="row.item.active == 0" class="bg-danger" >No Vigente</b-badge>  
                 <b-badge v-if="row.item.active == 1" class="bg-success" >Vigente</b-badge>   
              </template> 
