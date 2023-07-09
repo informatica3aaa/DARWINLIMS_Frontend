@@ -278,8 +278,7 @@
         header-bg-variant="darwin"
         header="Vigencia"
         header-tag="header"> 
-        <b-row>
-          {{ form.desde.value }}
+        <b-row> 
           <b-col sm="6">
               <b-form-group 
               label-size="sm"

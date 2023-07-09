@@ -176,19 +176,19 @@
                             placeholder="Estado">
                         </model-select>  
                     </b-input-group>
-                    <b-input-group v-if="field.is_select == 'active' && field.fil">
+                    <b-input-group v-if="field.is_select == 'start_date'">
                         <model-select 
                             size="sm"  
                             :options="vigencias"
-                            v-model="filters[field.key]"
+                            v-model="filters['active']"
                             placeholder="Vigencia">
                         </model-select>  
                     </b-input-group>
-                    <b-input-group v-if="field.is_select == 'expiration_date' && field.fil">
+                    <b-input-group v-if="field.is_select == 'start_date'">
                         <model-select 
                             size="sm"  
                             :options="activas"
-                            v-model="filters[field.key]"
+                            v-model="filters['expiration_date']"
                             placeholder="Activa">
                         </model-select>  
                     </b-input-group>
@@ -250,19 +250,18 @@
                  </span>
              </template>
              <template #cell(start_date)="row">   
-                 <span class="text-darwin">
-                           {{ row.item.start_date }}
-                 </span>
-             </template>
-             <template #cell(expiration_date)="row">   
-                 <span class="text-darwin">
-                           {{ row.item.expiration_date }}
-                 </span>
-             </template>
+                <span class="text-darwin">
+                        {{ row.item.start_date }}
+                </span>
+                <span class="text-darwin">
+                        {{ row.item.expiration_date }}
+                </span>
+                <b-badge v-if="row.item.active == 0" class="bg-danger" >No Vigente</b-badge>  
+                <b-badge v-if="row.item.active == 1" class="bg-success" >Vigente</b-badge>   
+             </template> 
              <template #cell(active)="row">   
                    <b-badge v-if="row.item.active == 0" class="bg-danger" >No Vigente</b-badge>  
-                   <b-badge v-if="row.item.active == 1" class="bg-success" >Vigente</b-badge>  
-               
+                   <b-badge v-if="row.item.active == 1" class="bg-success" >Vigente</b-badge>   
              </template>
              <template #cell(state_id)="row">   
                    <b-badge v-if="row.item.state_id == 1" class="bg-warning">Pendiente</b-badge>  
@@ -970,9 +969,8 @@ export default {
             {  is_select: 'company_name', active: false, fil: true, key: 'company_name', label: 'Cliente', class: 'text-center'},
             {  is_select: 'estado_notificacion', active: false, fil: true, key: 'estado_notificacion', label: 'Est Noti.', class: 'text-center'},
             {  is_select: false, active: false, fil: true, key: 'project', label: 'Proyecto' , class: 'text-center'},
-            {  is_select: false, active: false, fil: false, key: 'start_date', label: 'Inicio' , class: 'text-center'},
-            {  is_select: 'expiration_date', active: false, fil: true,  key: 'expiration_date', label:'Expiracion', class: 'text-center'},
-            {  is_select: 'active', active: false, fil: true, key: 'active',  label:'Vigencia', class: 'text-center'},
+            {  is_select: 'start_date', active: false, fil: false, key: 'start_date', label: 'Fechas' , class: 'text-center'}, 
+            // {  is_select: 'active', active: false, fil: true, key: 'active',  label:'Vigencia', class: 'text-center'},
             {  is_select: 'state_id', active: false, fil: true, key: 'state_id',  label:'Estado', class: 'text-center'},
             {  is_select: false, active: false, fil: false, key: 'acciones',  label:'Acciones', class: 'text-center'}
         ],
