@@ -104,6 +104,9 @@ const mutations = {
     { 
         console.log('ADD_SERVICIOS_ELEGIDOS::', payload)
         state.servicios_elegidos.push(payload)
+        state.servicios_agregados = state.servicios_agregados.filter(serv => serv.assay_id != payload.assay_id  )
+
+        console.log('state.servicios_agregados::', state.servicios_agregados)
     },
     BACK_SERVICIOS_ELEGIDOS(state, payload)
     { 
@@ -581,10 +584,7 @@ const actions = {
 
         let loading = payload.loading.show()
 
-        try { 
-
-
-            console.log('payload.item::',payload.quotation_id, payload.item.assay_id, payload.item.cost)
+        try {  
 
             const { data } =  await axios.post('/api/quotations/new/detail', {
                 active : 0,
