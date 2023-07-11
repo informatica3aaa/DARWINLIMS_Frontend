@@ -366,8 +366,10 @@ import { ModelSelect } from 'vue-search-select'
 import { downloadPDFBase64 } from './../util/pdfHelper'
 import router from './../router'
 import Swal from "sweetalert2"
-import * as docx from 'docx'
+import { Document,Packer, Paragraph,Table,TableRow ,TableCell, WidthType, VerticalAlign, BorderStyle, Header, Footer ,AlignmentType} from "docx";
 import saveAs from 'file-saver'
+
+
 
 export default {
     name: 'TableComponent',
@@ -487,9 +489,6 @@ export default {
         async verHistorico(item)
         {  
 
-            console.log('Ver historico')
-            console.log('item:: ', item)
-
             const payload = {}
             payload.loading = this.$loading
             payload.toast = this.$toast
@@ -505,8 +504,6 @@ export default {
         },
         async ver(item)
         { 
-
-            console.log('item:: ', item)
 
             const payload = {}
             payload.loading = this.$loading
@@ -525,9 +522,7 @@ export default {
         async anular(item)
         { 
 
-            console.log('item:: ', item)
-
-            const { value } = await Swal.fire(
+           const { value } = await Swal.fire(
                     { 
                         text: '¿Está seguro que desea anular esta cotización?',  
                         type: 'default', 
@@ -578,8 +573,10 @@ export default {
             payload.download = 'word' 
 
             const data =  await this.download(payload)  
-            console.log("data;::::", data);
-            await this.generateWordDocument(data[0])
+            // console.log("data;::::", data);
+            // await this.generateWordDocument(data[0])
+            await this.generaText(data[0])
+
             return data
 
         },
@@ -604,7 +601,7 @@ export default {
             
             payload.todas = "no"     
 
-            console.log('payload.offset>>', payload.offset)
+            // console.log('payload.offset>>', payload.offset)
 
             await this.searchFilter(payload)
         },
@@ -618,312 +615,584 @@ export default {
 
             
         },
-        generateWordDocument(datos){
+    //     generateWordDocument(datos){
             
-            const table = new docx.Table({
-                borders: {
-                    top: {
-                        color:"FFFFFF",
-                        },
-                    bottom: {
-                        color: "FFFFFF",
-                    },
-                    left: {
-                        color: "#FFFFFF",
-                    },
-                    right: {
-                        color: "FFFFFF",
-                    }
-                    },
-            width:{
-                size: 9000,
-                type: docx.WidthType.DXA,
-            },
-            rows: [
-             new docx.TableRow({
-                bold: true,
-                children: [
-                    new docx.TableCell({
-                        columnSpan: 2,
-                        children: [new docx.Paragraph("1. DATOS GENERALES")],
-                        verticalAlign: docx.VerticalAlign.TOP,
-                    }),
+    //         const table = new docx.Table({
+    //             borders: {
+    //                 top: {
+    //                     color:"FFFFFF",
+    //                     },
+    //                 bottom: {
+    //                     color: "FFFFFF",
+    //                 },
+    //                 left: {
+    //                     color: "#FFFFFF",
+    //                 },
+    //                 right: {
+    //                     color: "FFFFFF",
+    //                 }
+    //                 },
+    //         width:{
+    //             size: 9000,
+    //             type: docx.WidthType.DXA,
+    //         },
+    //         rows: [
+    //          new docx.TableRow({
+    //             bold: true,
+    //             children: [
+    //                 new docx.TableCell({
+    //                     columnSpan: 2,
+    //                     children: [new docx.Paragraph("1. DATOS GENERALES")],
+    //                     verticalAlign: docx.VerticalAlign.TOP,
+    //                 }),
                     
-                ],
-                top: {
-                    style: docx.BorderStyle.NONE,
-                    size: 3,
-                    color: "FF0000",
-                    },
-            }),
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Número")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph(datos.quotation_number)],
-                    }),
-                ],
-            }),
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Vigencia")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph(datos.start_date + ' al '+ datos.expiration_date)],
-                    }),
-                ],
-            }),
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Cliente")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph(datos.fantasy_name)],
-                    }),
-                ],
-            }),
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Rut Cliente")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph(datos.rut+'-'+datos.dv)],
-                    }),
-                ],
-            }),
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Proyecto")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph(datos.project ? datos.project : '')],
-                    }),
-                ],
-            }),
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Días estimados")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph(datos.estimated_days)],
-                    }),
-                ],
-            }),
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Ejecutivo")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph(datos.user_creator)],
-                    }),
-                ],
-            }),
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Dirigido a")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph(datos.for)],
-                    }),
-                ],
-            }),
-            ]
-            });
-            const tableHeader = new docx.Table({
+    //             ],
+    //             top: {
+    //                 style: docx.BorderStyle.NONE,
+    //                 size: 3,
+    //                 color: "FF0000",
+    //                 },
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Número")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph(datos.quotation_number)],
+    //                 }),
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Vigencia")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph(datos.start_date + ' al '+ datos.expiration_date)],
+    //                 }),
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Cliente")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph(datos.fantasy_name)],
+    //                 }),
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Rut Cliente")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph(datos.rut+'-'+datos.dv)],
+    //                 }),
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Proyecto")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph(datos.project ? datos.project : '')],
+    //                 }),
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Días estimados")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph(datos.estimated_days)],
+    //                 }),
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Ejecutivo")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph(datos.user_creator)],
+    //                 }),
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Dirigido a")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph(datos.for)],
+    //                 }),
+    //             ],
+    //         }),
+    //         ]
+    //         });
+    //         const tableHeader = new docx.Table({
+    //         width:{
+    //             size: 9000,
+    //             type: docx.WidthType.DXA,
+    //         },
+    //         rows: [
+    //         new docx.TableRow({
+    //             rowSpan: 2,
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Oferta Comercial")],
+    //                 }),
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph(datos.quotation_number)],
+    //                 }),
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Laboratorio de Análisis Químico")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Andes Analytical Assay SpA ")],
+    //                 }),
+    //             ],
+    //         })
+    //         ]
+    //         });
+    //         const tableFooter = new docx.Table({
+    //         width:{
+    //             size: 9000,
+    //             type: docx.WidthType.DXA,
+    //         },
+    //         rows: [
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("El Totoral 651, Barrio Industrial Buenaventura ")],
+    //                 })
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Quilicura, Santiago - Fono (56-2) 2747 1265")],
+    //                 })
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("www.3aaa.cl")],
+    //                 })
+    //             ],
+    //         })
+    //         ]
+    //         });
+    //         const tableBody = new docx.Table({
+    //         width:{
+    //             size: 9000,
+    //             type: docx.WidthType.DXA,
+    //         },
+    //         rows: [
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     columnSpan: 4,
+    //                     children: [new docx.Paragraph("2. RESUMEN OFERTA COMERCIAL")],
+    //                 })
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("id")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Tipo")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Ítem")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Valor")],
+    //                 }),
+    //             ],
+    //         }),
+            
+    //         ]
+    //         });
+            
+    //         const tableBody2 = new docx.Table({
+    //         width:{
+    //             size: 9000,
+    //             type: docx.WidthType.DXA,
+    //         },
+    //         rows: [
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     columnSpan: 4,
+    //                     children: [new docx.Paragraph("2. RESUMEN OFERTA COMERCIAL")],
+    //                 })
+    //             ],
+    //         }),
+    //         new docx.TableRow({
+    //             children: [
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("id")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Tipo")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Ítem")],
+    //                 }),
+    //                 new docx.TableCell({
+    //                     children: [new docx.Paragraph("Valor")],
+    //                 }),
+    //             ],
+    //         }),
+
+    //         ]
+    //         });
+
+    //         // for(let index = 0; index < datos.analisis_asociado.length; index++){
+    //         //     console.log("INDEX;;;;;;;;;", index);
+    //         // let tableBody3 = new docx.Table({
+    //         // rows: [
+    //         // new docx.TableRow({
+    //         //     children: [
+    //         //         new docx.TableCell({
+    //         //             children: [new docx.Paragraph(index)],
+    //         //         }),
+    //         //         new docx.TableCell({
+    //         //             children: [new docx.Paragraph("Tipo")],
+    //         //         }),
+    //         //         new docx.TableCell({
+    //         //             children: [new docx.Paragraph("Ítem")],
+    //         //         }),
+    //         //         new docx.TableCell({
+    //         //             children: [new docx.Paragraph("Valor")],
+    //         //         }),
+    //         //     ],
+    //         // }),
+            
+    //         // ]
+    //         // });
+    //         // tableBody2.push(tableBody3)
+    //         // }
+   
+    //         const doc = new docx.Document({
+    //     sections: [{
+    //         headers: {
+    //             default: new docx.Header({
+    //                 children: [tableHeader],
+    //             }),
+    //         },
+    //         footers: {
+    //             default: new docx.Footer({
+    //                 children: [tableFooter],
+    //             }),
+    //         },
+    //         children: [table, tableBody, tableBody2],
+    //     }],
+    //          });
+
+
+    //     docx.Packer.toBlob(doc).then((blob) => {
+    //         console.log(blob);
+    //         saveAs(blob, "example.docx");
+    //         console.log("Document created successfully");
+    //     });
+    // },
+        async generaText  (datos){//INICIO
+            const estiloBordes = {
+                            top: {
+                                style: BorderStyle.NONE,
+                                size: 1,
+                                color: "889900",
+                            },
+                            bottom: {
+                                style: BorderStyle.NONE,
+                                size: 1,
+                                color: "889900",
+                            },
+                            left: {
+                                style: BorderStyle.NONE,
+                                size: 1,
+                                color: "889900",
+                            },
+                            right: {
+                                style: BorderStyle.NONE,
+                                size: 1,
+                                color: "889900",
+                            },
+                        }
+        const tableHeader = new Table({
             width:{
+                alignment: AlignmentType.CENTER,
                 size: 9000,
-                type: docx.WidthType.DXA,
+                type: WidthType.DXA,
             },
             rows: [
-            new docx.TableRow({
+            new TableRow({
                 rowSpan: 2,
                 children: [
-                    new docx.TableCell({
+                    new TableCell({
+                        borders: estiloBordes,
                         children: [],
                     }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Oferta Comercial")],
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Oferta Comercial")],
                     }),
                 ],
             }),
-            new docx.TableRow({
+            new TableRow({
                 children: [
-                    new docx.TableCell({
+                    new TableCell({
+                        borders: estiloBordes,
                         children: [],
                     }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph(datos.quotation_number)],
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph(datos.quotation_number)],
                     }),
                 ],
             }),
-            new docx.TableRow({
+            new TableRow({
                 children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Laboratorio de Análisis Químico")],
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Laboratorio de Análisis Químico")],
                     }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Andes Analytical Assay SpA ")],
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Andes Analytical Assay SpA ")],
                     }),
                 ],
             })
             ]
             });
-            const tableFooter = new docx.Table({
+            const tableFooter = new Table({
             width:{
                 size: 9000,
-                type: docx.WidthType.DXA,
+                type: WidthType.DXA,
             },
             rows: [
-            new docx.TableRow({
+            new TableRow({
                 children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("El Totoral 651, Barrio Industrial Buenaventura ")],
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("El Totoral 651, Barrio Industrial Buenaventura ")],
                     })
                 ],
             }),
-            new docx.TableRow({
+            new TableRow({
                 children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Quilicura, Santiago - Fono (56-2) 2747 1265")],
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Quilicura, Santiago - Fono (56-2) 2747 1265")],
                     })
                 ],
             }),
-            new docx.TableRow({
+            new TableRow({
                 children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("www.3aaa.cl")],
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("www.3aaa.cl")],
                     })
                 ],
             })
-            ]
-            });
-            const tableBody = new docx.Table({
-            width:{
-                size: 9000,
-                type: docx.WidthType.DXA,
-            },
-            rows: [
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        columnSpan: 4,
-                        children: [new docx.Paragraph("2. RESUMEN OFERTA COMERCIAL")],
-                    })
-                ],
-            }),
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("id")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Tipo")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Ítem")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Valor")],
-                    }),
-                ],
-            }),
-            
-            ]
-            });
-            
-            const tableBody2 = new docx.Table({
-            width:{
-                size: 9000,
-                type: docx.WidthType.DXA,
-            },
-            rows: [
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        columnSpan: 4,
-                        children: [new docx.Paragraph("2. RESUMEN OFERTA COMERCIAL")],
-                    })
-                ],
-            }),
-            new docx.TableRow({
-                children: [
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("id")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Tipo")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Ítem")],
-                    }),
-                    new docx.TableCell({
-                        children: [new docx.Paragraph("Valor")],
-                    }),
-                ],
-            }),
-            
             ]
             });
 
-            // for(let index = 0; index < datos.analisis_asociado.length; index++){
-            //     console.log("INDEX;;;;;;;;;", index);
-            // let tableBody3 = new docx.Table({
-            // rows: [
-            // new docx.TableRow({
-            //     children: [
-            //         new docx.TableCell({
-            //             children: [new docx.Paragraph(index)],
-            //         }),
-            //         new docx.TableCell({
-            //             children: [new docx.Paragraph("Tipo")],
-            //         }),
-            //         new docx.TableCell({
-            //             children: [new docx.Paragraph("Ítem")],
-            //         }),
-            //         new docx.TableCell({
-            //             children: [new docx.Paragraph("Valor")],
-            //         }),
-            //     ],
-            // }),
-            
-            // ]
-            // });
-            // tableBody2.push(tableBody3)
-            // }
-   
-            const doc = new docx.Document({
-        sections: [{
-            headers: {
-                default: new docx.Header({
+
+
+
+            const table = new Table({
+
+                width:{
+                size: 9000,
+                type: WidthType.DXA
+            },
+            rows: [
+             new TableRow({
+
+                bold: true,
+                children: [
+                    new TableCell({
+                        borders: estiloBordes,
+                        columnSpan: 2,
+                        children: [new Paragraph("1. DATOS GENERALES")],
+                        verticalAlign: VerticalAlign.TOP,
+                    }),
+                    
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Número")],
+                    }),
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph(datos.quotation_number)],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Vigencia")],
+                    }),
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph(datos.start_date + ' al '+ datos.expiration_date)],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Cliente")],
+                    }),
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph(datos.fantasy_name)],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Rut Cliente")],
+                    }),
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph(datos.rut+'-'+datos.dv)],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Proyecto")],
+                    }),
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph(datos.project ? datos.project : '')],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Días estimados")],
+                    }),
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph(datos.estimated_days)],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Ejecutivo")],
+                    }),
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph(datos.user_creator)],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph("Dirigido a")],
+                    }),
+                    new TableCell({
+                        borders: estiloBordes,
+                        children: [new Paragraph(datos.for)],
+                    }),
+                ],
+            }),
+            ]
+            });
+             let form = [];
+              for(let index = 0; index < datos.analisis_asociado.length; index++){
+                console.log("index::::", datos.analisis_asociado[index]);
+                let service = {
+                    numero: index + 1,
+                    tipo:  datos.analisis_asociado[index].tipo,
+                    item:  datos.analisis_asociado[index].assay_name,
+                    valor: datos.analisis_asociado[index].currency_quo + '. ' +  datos.analisis_asociado[index].valor_final
+                }
+                form.push(service)
+              }
+
+            //   const tablebody = new Table({
+            //         rows:  form
+            //     });
+
+            const tablebody = new Table({
+                        rows: [
+                            new TableRow({
+                                children: datos.analisis_asociado
+                            }),
+                        ],
+                    });
+
+            const doc = new Document({
+            sections: [{
+                            headers: {
+                default: new Header({
                     children: [tableHeader],
                 }),
             },
             footers: {
-                default: new docx.Footer({
+                default: new Footer({
                     children: [tableFooter],
                 }),
             },
-            children: [table, tableBody, tableBody2],
-        }],
+            children: [table, tablebody],
+                }],
              });
 
 
-        docx.Packer.toBlob(doc).then((blob) => {
+        Packer.toBlob(doc).then((blob) => {
             console.log(blob);
             saveAs(blob, "example.docx");
             console.log("Document created successfully");
         });
-    }
-    },
+
+
+        },//fin
+        },
     data: function(){
       return {
             desierta: 0,

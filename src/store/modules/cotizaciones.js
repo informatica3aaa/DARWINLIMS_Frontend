@@ -47,7 +47,6 @@ const mutations = {
     },
     SET_COTIZACION(state, payload)
     {
-        console.log('dejo cotiza:: ', payload)
         state.cotiza = payload
     },
     SET_TIPOS_ENSAYO(state, payload)
@@ -90,7 +89,6 @@ const mutations = {
     SET_SERVICIOS_AGREGADOS(state, payload)
     {
         state.servicios_agregados = payload
-        console.log('state.servicios_agregados:: ', state.servicios_agregados)
     },
     SET_ONE_SERVICIOS_AGREGADOS(state, payload)
     {
@@ -102,15 +100,12 @@ const mutations = {
     },
     ADD_SERVICIOS_ELEGIDOS(state, payload)
     { 
-        console.log('ADD_SERVICIOS_ELEGIDOS::', payload)
         state.servicios_elegidos.push(payload)
         state.servicios_agregados = state.servicios_agregados.filter(serv => serv.assay_id != payload.assay_id  )
 
-        console.log('state.servicios_agregados::', state.servicios_agregados)
     },
     BACK_SERVICIOS_ELEGIDOS(state, payload)
     { 
-        console.log('BACK_SERVICIOS_ELEGIDOS::', payload)
         state.servicios_elegidos = state.servicios_elegidos.filter(serv => serv.id != payload.id  )
     },
     CLEAR_SERVICIOS_ELEGIDOS(state)
@@ -162,8 +157,6 @@ const actions = {
 
             if(!data.ok) throw { message: 'No se logro consultar por los cliente'}
 
-            console.log('data:: ', data)
-
             await commit('SET_COTIZACION', data.company)
             await commit('SET_COTIZACIONES_REQUICISION', data.data)
 
@@ -189,13 +182,13 @@ const actions = {
     async getAllCotizaciones({commit}, payload) 
     {   
         let loading = payload.loading.show() 
-        console.log(commit)
+        // console.log(commit)
         try { 
             const { data } =  await axios.post('/api/quotations/allquo', payload)
 
             if(!data.ok) throw { message: 'No se logro confirmar la cotización'}
 
-            console.log('cotizacioens:: ', data.data)
+            // console.log('cotizacioens:: ', data.data)
             await commit('SET_ALL_COTIZACIONES', data.data)
             loading.hide() 
 
@@ -233,8 +226,8 @@ const actions = {
     },
     async download({commit}, payload) 
     {   
+        console.log("commit", commit);
         let loading = payload.loading.show() 
-        console.log(commit);
         try { 
             const { data } =  await axios.post('/api/quotations/download', payload)
             if(!data.ok) throw { message: 'No se logro consultar consultar por la cotización'}
@@ -303,7 +296,7 @@ const actions = {
 
             const { data } = await axios.post(`/api/quotations/parent`, payload)
 
-            console.log('POST SERVICIOS::', data.data)
+            // console.log('POST SERVICIOS::', data.data)
 
             if(!data.ok) throw { message: 'No se logro consultar por los servicios de Assay'}
             
@@ -508,8 +501,8 @@ const actions = {
 
             if(!data.ok) throw { message: 'No se logro cargar los servicios'}
 
-            console.log('Paso::')
-            console.log('data[0]:: ', data.data)
+            // console.log('Paso::')
+            // console.log('data[0]:: ', data.data)
 
             await commit('SET_SERVICIOS_AGREGADOS', data.data)
 
@@ -530,7 +523,7 @@ const actions = {
 
             if(!data.ok) throw { message: 'No se logro cargar los servicios'}
 
-            console.log('data crgaservicio:: ', data?.data[0])
+            // console.log('data crgaservicio:: ', data?.data[0])
 
             await commit('SET_SERVICIOS_AGREGADOS', data?.data[0]?.analisis_asociado)
 
@@ -606,7 +599,7 @@ const actions = {
     },
     async crearProyecto(state, payload) 
     {   
-        console.log('crear proyecto', payload)
+        // console.log('crear proyecto', payload)
         let loading = payload.loading.show()
 
         try {
@@ -632,7 +625,7 @@ const actions = {
 
             const { data } =  await axios.get(`/api/quotations/${ payload.item.id }/${ payload.item.active }`)
 
-            console.log('data cotizacion:: ', data.data)
+            // console.log('data cotizacion:: ', data.data)
             loading.hide()  
             await commit('SET_SERVICIOS_AGREGADOS', [])
             await commit('SET_COTIZACION', data?.data[0])
@@ -652,20 +645,20 @@ const actions = {
         try {
             const { data } =  await axios.post('/api/quotations/new', payload)
 
-            console.log(data)
+            // console.log(data)
 
             if(!data.ok) throw { message: 'No se creo cotizacion'} 
 
             loading.hide() 
             payload.toast.success("Cotizacion creada")
-            console.log('NUEVA COTIZACION::::', data)
+            // console.log('NUEVA COTIZACION::::', data)
             await commit('SET_COTIZACION', data.data[0])
             await commit('SET_SERVICIOS_AGREGADOS', []) 
             await commit('CLEAR_SERVICIOS_ELEGIDOS')
 
             const asociados = data.data[0]?.analisis_asociado || [] 
 
-            console.log('asociados:: ', asociados)
+            // console.log('asociados:: ', asociados)
 
             for(let servicio of asociados)
             {
@@ -685,7 +678,7 @@ const actions = {
     },
     async finalizar({commit}, payload) 
     {   
-        console.log('payload finish::', payload, commit)
+        // console.log('payload finish::', payload, commit)
         let loading = payload.loading.show()
 
         try {
@@ -725,10 +718,10 @@ const actions = {
     {   
         let loading = payload.loading.show()
         try {
-            console.log("payload", payload);
+            // console.log("payload", payload);
             const { data } =  await axios.post('/api/quotations/por_vencer', payload)
             if(!data.ok) throw { message: 'No se logro consultar las cotizaciones'}
-            console.log("data:::", data);
+            // console.log("data:::", data);
             await commit('SET_COTIZACIONES', data)
             loading.hide()
 
@@ -740,7 +733,7 @@ const actions = {
     },
     async quotationAction({commit}, payload) 
     {   
-        console.log("payload::::::::::::::::::2", payload);
+        // console.log("payload::::::::::::::::::2", payload);
         let loading = payload.loading.show()
 
         try {
@@ -749,7 +742,7 @@ const actions = {
 
             if(!data.ok) throw { message: 'No se logro Actualizar la cotización'}
             
-            console.log("Actualizada::::::", data);
+            // console.log("Actualizada::::::", data);
 
             await commit('SET_COTIZACIONES', data)
 
