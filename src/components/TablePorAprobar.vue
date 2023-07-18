@@ -80,8 +80,20 @@
             <b-button-group size="sm">
                 <b-button @click="ver(row.item)">ver</b-button>
                 <b-button variant="danger" @click="rechazar(row.item)">Rechazar</b-button>
-                <b-button v-if="!row.item.ap_ventas" variant="success" @click="aprobarVenta(row.item)">Aprobar (Venta)</b-button>
-                <b-button v-if="!row.item.ap_prod" variant="success" @click="aprobarProduccion(row.item)">Aprobar (Produccion)</b-button>
+                <b-button 
+                    :disabled="user?.perfil?.nombre!='administrador'" 
+                    v-if="!row.item.ap_ventas" 
+                    variant="success" 
+                    @click="aprobarVenta(row.item)">
+                        Aprobar (Venta)
+                    </b-button> 
+                <b-button
+                    :disabled="user?.perfil?.nombre!='administrador'" 
+                    v-if="!row.item.ap_prod" 
+                    variant="success" 
+                    @click="aprobarProduccion(row.item)">
+                        Aprobar (Produccion)
+                    </b-button>
             </b-button-group>
             </template>
 
@@ -122,13 +134,25 @@ export default {
     computed:{
     ...mapState('cotizaciones', [ 
         'cotizaciones_por_aprobar', 
-        'cotiza'
+        'cotiza',
+        'user'
+        ]),
+    ...mapState('usuario', [  
+        'user'
         ])
     }, 
     async mounted()
     { 
 
+
         const payload = {}
+
+        if( this.$route.params.id )
+        {
+           payload.id = Number(this.$route.params.id)
+        } 
+
+
         payload.loading = this.$loading
         payload.toast = this.$toast 
         payload.limit = this.porPagina

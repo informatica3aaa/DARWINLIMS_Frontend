@@ -109,6 +109,12 @@ const routes = [
         beforeEnter: auth,
       },
       {
+        path: '/quotations/pendingquotations/:id',
+        name: 'cotizaciones_pendientes',
+        component: CotizacionesAprobarView,
+        beforeEnter: auth,
+      },
+      {
         path: '/quotations/por_vencer',
         name: 'cotizaciones_por_vencer',
         component: CotizacionListPorVencerView,
